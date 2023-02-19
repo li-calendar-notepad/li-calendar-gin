@@ -1,0 +1,58 @@
+basePath: /api/v1
+definitions:
+  system.LoginLoginVerify:
+    properties:
+      password:
+        maxLength: 20
+        minLength: 5
+        type: string
+      username:
+        minLength: 5
+        type: string
+      vcode:
+        maxLength: 6
+        minLength: 4
+        type: string
+    required:
+    - password
+    - username
+    type: object
+host: localhost:9090
+info:
+  contact:
+    email: GgoCoder@163.com
+    name: GgoCoder
+  description: This is a sample server celler server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  title: 日历记事本
+  version: "1.0"
+paths:
+  /login:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: 登陆验证信息
+        in: body
+        name: LoginLoginVerify
+        required: true
+        schema:
+          $ref: '#/definitions/system.LoginLoginVerify'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string}string
+      summary: 登录账号
+      tags:
+      - user
+schemes:
+- http
+securityDefinitions:
+  BasicAuth:
+    type: basic
+swagger: "2.0"
