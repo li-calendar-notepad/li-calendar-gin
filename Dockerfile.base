@@ -1,0 +1,15 @@
+
+FROM golang:1.19
+
+WORkDIR /root/build
+
+# 执行指令 关闭链接确认
+RUN go env -w GO111MODULE=on \
+    && go env -w GOPROXY=https://goproxy.cn,direct \
+    # 环境变量
+    && export PATH=$PATH:/go/bin \
+    # 静态资源编译使用
+    && go install -a -v github.com/go-bindata/go-bindata/...@latest \
+    && go install -a -v github.com/elazarl/go-bindata-assetfs/...@latest 
+
+CMD go mod tidy && go-bindata-assetfs -o=assets/bindata.go -pkg=assets assets/... && go build -o li-calendar main.go
