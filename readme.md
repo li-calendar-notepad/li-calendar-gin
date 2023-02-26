@@ -1,4 +1,25 @@
-# 日历记事本V2 Gin版本
+
+
+<p align="center">
+<img alt="li calendar" src="./readme_src/logo.png" width="100px" />
+<br>
+Li Calendar - 锂日历记事本
+<br>
+<a title="Github" target="_blank" href="https://github.com/li-calendar">Github</a> |
+<a title="Gitee" target="_blank" href="https://gitee.com/li-calendar-notepad">Gitee</a> 
+</p>
+
+
+
+
+
+## 介绍
+
+前身[日历记事本PHP版本](https://gitee.com/hslr/calendar_notepad)，因为工作中常常要记录每天的工作日志，所以2020年上半年，抽了几天的下班时间开发了PHP版本，稳定运行了一年，但是它有些不足，2021年决定重新启动此项目，对他进行优化和增加功能并进行了技术升级。后期接触了GO+Gin+Vue3+ElementUI-Plus并重新开发了本项目 锂日历记事本。
+
+
+
+
 
 ## 目录结构
 
