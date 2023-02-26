@@ -1,7 +1,7 @@
 ## 静态文件编译文件夹
 
 
-### 安装（...必须带上）
+### 1. 安装（...必须带上）
 ```ssh
 go get github.com/go-bindata/go-bindata/...
 go get github.com/elazarl/go-bindata-assetfs/...
@@ -10,12 +10,12 @@ go get github.com/elazarl/go-bindata-assetfs/...
 go install -a -v github.com/go-bindata/go-bindata/...@latest
 go install -a -v github.com/elazarl/go-bindata-assetfs/...@latest
 ```
-### 安装成功后将 GOPATH/bin 加入环境变量
+### 2. 安装成功后将 GOPATH/bin 加入环境变量
 
 参考各自系统环境变量配置即可
 
 
-### 压缩静态文件 到 asset目录
+### 3. 压缩静态文件 到 asset目录
 ```ssh
 # 测试
 # go-bindata-assetfs -debug -o=assets/bindata.go -pkg=assets static/... view/...

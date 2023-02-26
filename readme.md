@@ -5,7 +5,7 @@
 <br>
 Li Calendar - 锂日历记事本
 <br>
-<a title="Github" target="_blank" href="https://github.com/li-calendar">Github</a> |
+<a title="Github" target="_blank" href="https://github.com/li-calendar-notepad">Github</a> |
 <a title="Gitee" target="_blank" href="https://gitee.com/li-calendar-notepad">Gitee</a> 
 </p>
 
@@ -17,65 +17,59 @@ Li Calendar - 锂日历记事本
 
 前身[日历记事本PHP版本](https://gitee.com/hslr/calendar_notepad)，因为工作中常常要记录每天的工作日志，所以2020年上半年，抽了几天的下班时间开发了PHP版本，稳定运行了一年，但是它有些不足，2021年决定重新启动此项目，对他进行优化和增加功能并进行了技术升级。后期接触了GO+Gin+Vue3+ElementUI-Plus并重新开发了本项目 锂日历记事本。
 
+## 前端代码地址
+本项目不包含前端代码，前端代码是独立项目请访问：[github](https://github.com/li-calendar-notepad/li-calendar-vue) | [gitee](https://gitee.com/li-calendar-notepad/li-calendar-vue)
 
+## 编译
 
+#### 方式一 （通用）
 
+1. 前端文件编译后，将dist下文件全部移植`./assets/frontend`文件夹下。编译教程请参考[前端项目](#前端代码地址)的`readme.md`文件
 
-## 目录结构
+2. 按照[此教程](./assets/readme.md)安装工具。然后将
+    `assets`文件夹编译成go文件（目的是把静态资源打包在可执行文件内）
+3. 依次执行
+    ```shell
+    # 编译静态资源（上一步执行完成了，可以不用重复执行）
+    go-bindata-assetfs -o=assets/bindata.go -pkg=assets assets/... 
+    
+    # 开始编译，编译成功后在项目根目录生成可执行文件：li-calendar win平台: li-calendar.exe
+    go build -o li-calendar main.go
+    ```
+#### 方式二 （Docker）推荐此方式
 
-生成方式`tree --dirsfirst --charset=ascii . -d`
+前提：docker环境，并且可以执行make命令，暂时不适用于windows平台
+
+1. 将前端代码克隆在当前项目的根目录并将文件夹命名为`web`
+    示例：
+    ```shell
+    # github
+    git clone https://github.com/li-calendar-notepad/li-calendar-vue web
+    
+    # gitee
+    git clone https://gitee.com/li-calendar-notepad/li-calendar-vue web
+    ```
+2. 执行make命令
+    ```shell
+    # 编译程序，成功后项目根目录会生成压缩包
+    make build
+    ```
+
+## 运行
+
+#### 生成配置文件：
 ```
-|-- api                         api文档
-|   `-- v1                      v1版本
-|       |-- admin               admin路由
-|       |-- common              公共路由
-|       |   |-- apiReturn       api返回
-|       |   `-- base            基础路由
-|       |-- install             安装相关
-|       |-- middleware          中间件
-|       `-- system              系统相关
-|-- assets                      前端文件
-|-- DOC                         文档相关
-|-- initialize                  初始化
-|-- lang                        web语言包
-|-- lib                         公共库
-|   |-- cache                   缓存
-|   |-- captcha                 图形验证码
-|   |-- cmn                     常用封装
-|   |-- computerInfo            系统信息(cpu, memory)
-|   |-- global                  全局配置相关
-|   |-- jsonConfig              json 解析配置
-|   |-- language                语言翻译相关
-|   |-- mail                    邮件相关
-|   |-- systemSetting           系统配置
-|   `-- user                    用户相关
-|-- models                      数据库模型
-|   `-- datatype
-`-- routers                     路由集合
-    `-- admin                   admin路由
-```
+# 生成配置文件（必须）
+./li-calendar config
 
-## 文档构建(构建中)
-执行 `make swag` 或者 `swag init -g main.go` </br>
-打开 [`http://127.0.0.1:9090/swagger/index.html`](http://127.0.0.1:9090/swagger/index.html) 查看文档
-
-## 代码格式化
-执行`make fmt`或者`gofmt -w -l .`(仅限Linux)
-
-## 编译流程
-
-1. 前端文件(编译完成的)
-
-将前端文件存放至`./assets/frontend`
-
-2. 编译静态文件到包内
-
-```
-go-bindata-assetfs -o=assets/bindata.go -pkg=assets assets/...
+# 执行完成之后同级目录会生成两个配置文件，根据自己的需求修改`config.ini`文件内容
 ```
 
-3. 构建
+#### 运行：
+```
+# 运行
+./li-calendar 
+```
 
-```
-go build
-```
+#### 访问：
+浏览器打开：http://[你的域名或ip]:9090
