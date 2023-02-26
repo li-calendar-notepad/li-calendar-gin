@@ -5,34 +5,43 @@ import (
 	"calendar-note-gin/lib/cmn"
 	"calendar-note-gin/lib/global"
 	"calendar-note-gin/lib/language"
+	"flag"
+	"fmt"
+	"os"
+
+	"github.com/gin-gonic/gin"
 )
 
-// @title           日历记事本
-// @version         1.0
-// @description     This is a sample server celler server.
-// @license.name  Apache 2.0
-// @license.url   http://www.apache.org/licenses/LICENSE-2.0.html
-// @host      localhost:9090
-// @BasePath  /api/v1
-// @contact.name GgoCoder
-// @contact.email GgoCoder@163.com
-// @schemes http
-// @securityDefinitions.basic  BasicAuth
 func main() {
+	foostr := flag.NewFlagSet("config", flag.ExitOnError)
+	_ = foostr
+	if len(os.Args) > 1 {
+		switch os.Args[1] {
+		case "config":
+			// 生成配置文件
+			fmt.Println("正在生成配置文件")
+			cmn.AssetsTakeFileToPath("conf.example.ini", "conf/conf.example.ini")
+			cmn.AssetsTakeFileToPath("conf.example.ini", "conf/conf.ini")
+			fmt.Println("配置文件已经创建 conf/conf.ini ", "请按照自己的需求修改")
+			os.Exit(1)
+		}
+	}
 
-	global.Logger.Infoln("li-calendar start!")
+	// global.Logger.Infoln("li-calendar start!")
+	fmt.Println("li-calendar start!")
 
-	// gin.SetMode(gin.TestMode) // GIN 框架调试模式
+	gin.SetMode(gin.ReleaseMode) // GIN 发布模式
 	// 配置初始化
 	if config, err, errCode := initialize.Conf(getDefaultConfig()); err != nil && errCode == 0 {
 		// 抛出错误
 		cmn.Pln(cmn.LOG_ERROR, "配置文件创建错误:"+err.Error())
 	} else if errCode == 1 {
 		// 配置文件不存在，需要浏览器初始流程
-		// 直接启动路由
-		cmn.Pln(cmn.LOG_DEBUG, "配置文件不存在")
-		global.Logger.Infoln("conf/conf.ini is not exist, start init from web!")
-		initialize.RouterNeedWebInit()
+		// global.Logger.Infoln("conf/conf.ini is not exist, start init from web!")
+		// cmn.ErrorExit("", "conf/conf.ini is not exist, please execute \"li-calendar config\" to create.")
+		cmn.ErrorExit("", "配置文件 conf/conf.ini 不存在, 请执行 \"li-calendar config\" 来创建配置文件")
+		os.Exit(1)
+		// initialize.RouterNeedWebInit() // web初始化方式，暂时未开发
 	} else {
 		global.Config = config
 	}

@@ -178,7 +178,8 @@ func InStringArray(arr []string, item string) bool {
 	return true
 }
 
-// 从Assets文件夹中抽取文件
+// 从Assets文件夹中抽取文件保存到路劲
+// AssetsTakeFileToPath("config.ini", targetPath string)
 func AssetsTakeFileToPath(assetsPath, targetPath string) error {
 	// bytes, _ := assets.Asset("assets/conf.example.ini")
 	bytes, _ := assets.Asset("assets/" + assetsPath)

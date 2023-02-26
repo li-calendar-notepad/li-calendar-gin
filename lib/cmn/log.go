@@ -83,6 +83,7 @@ func ErrorExit(err_title, err_msg string) {
 
 	Pln("Error", err_title+err_msg)
 	newLog.Error(err_title, err_msg)
+	os.Exit(1)
 }
 
 // 写入日志的文件
