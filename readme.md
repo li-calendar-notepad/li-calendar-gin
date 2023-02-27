@@ -73,3 +73,27 @@ Li Calendar - 锂日历记事本
 
 #### 访问：
 浏览器打开：http://[你的域名或ip]:9090
+
+
+## Docker 运行
+
+```shell
+# 编译镜像
+docker build -t licalendar:leatest . 
+
+# 运行
+docker run --name li-calendar -p 9090:9090 \
+-v ~/licalendar/conf:/app/conf \
+-v ~/licalendar/runtime:/app/runtime \
+-v ~/licalendar/lang:/app/lang \
+-v ~/licalendar/database:/app/database \
+licalendar:leatest
+```
+
+数据卷说明
+```
+-v ~/licalendar/conf:/app/conf # 项目配置目录
+-v ~/licalendar/runtime:/app/runtime # 运行缓存、日志等
+-v ~/licalendar/lang:/app/lang # 语言文件
+-v ~/licalendar/database:/app/database # sqlite数据库文件夹
+```

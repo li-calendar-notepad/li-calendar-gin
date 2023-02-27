@@ -25,7 +25,7 @@ func main() {
 			cmn.AssetsTakeFileToPath("conf.example.ini", "conf/conf.example.ini")
 			cmn.AssetsTakeFileToPath("conf.example.ini", "conf/conf.ini")
 			fmt.Println("配置文件已经创建 conf/conf.ini ", "请按照自己的需求修改")
-			os.Exit(1)
+			os.Exit(0)
 		}
 	}
 
