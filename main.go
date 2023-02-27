@@ -39,8 +39,7 @@ func main() {
 	} else if errCode == 1 {
 		// 配置文件不存在，需要浏览器初始流程
 		// global.Logger.Infoln("conf/conf.ini is not exist, start init from web!")
-		// cmn.ErrorExit("", "conf/conf.ini is not exist, please execute \"li-calendar config\" to create.")
-		cmn.ErrorExit("", "配置文件 conf/conf.ini 不存在, 请执行 \"li-calendar config\" 来创建配置文件")
+		global.Logger.Errorln("配置文件 conf/conf.ini 不存在, 请执行 \"li-calendar config\" 来创建配置文件")
 		os.Exit(1)
 		// initialize.RouterNeedWebInit() // web初始化方式，暂时未开发
 	} else {
@@ -59,8 +58,8 @@ func main() {
 
 	// 连接数据库
 	if err := initialize.ConnectDb(); err != nil {
-		global.Logger.Errorln("failed to init db, err:%+v", err)
-		global.Logger.Errorln("数据库错误：" + err.Error())
+		// global.Logger.Errorln("failed to init db, err:%+v", err)
+		global.Logger.Errorln("数据库连接错误", err.Error())
 	}
 
 	// 用户不存在创建用户

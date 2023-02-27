@@ -2,6 +2,7 @@ package language
 
 import (
 	"calendar-note-gin/lib/cmn"
+	"os"
 	"strings"
 )
 
@@ -18,6 +19,7 @@ func NewLang(lang string) *LangStructObj {
 		langObj.LangContet = cmn.NewIniConfig(langPath) // 读取配置
 	} else {
 		cmn.Pln(cmn.LOG_ERROR, "language file does not exist:"+langPath)
+		os.Exit(1)
 	}
 	return &langObj
 }

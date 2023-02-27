@@ -72,19 +72,19 @@ func Print(color, key, msg string) {
 	)
 }
 
-func Debug(a ...interface{}) {
-	fmt.Print("[Debug] ")
-	fmt.Println(a...)
-}
+// func Debug(a ...interface{}) {
+// 	fmt.Print("[Debug] ")
+// 	fmt.Println(a...)
+// }
 
-// 错误并退出
-func ErrorExit(err_title, err_msg string) {
-	newLog := NewLog("err.log")
+// // 错误并退出
+// func ErrorExit(err_title, err_msg string) {
+// 	newLog := NewLog("err.log")
 
-	Pln("Error", err_title+err_msg)
-	newLog.Error(err_title, err_msg)
-	os.Exit(1)
-}
+// 	Pln("Error", err_title+err_msg)
+// 	newLog.Error(err_title, err_msg)
+// 	os.Exit(1)
+// }
 
 // 写入日志的文件
 func NewLog(log_file_name string) *LogStruct {
@@ -188,34 +188,34 @@ func (t *LogStruct) Error(content ...string) {
 	}
 }
 
-// 打印错误
-func (t *LogStruct) ErrorPrint(key, value string) {
-	t.Print_cfg = true
-	t.Error(key, value)
-}
+// // 打印错误
+// func (t *LogStruct) ErrorPrint(key, value string) {
+// 	t.Print_cfg = true
+// 	t.Error(key, value)
+// }
 
-// 打印Debug
-func (t *LogStruct) DebugPrint(key, value string) {
-	t.Print_cfg = true
-	content := key + " " + value
-	t.Debug(content)
-}
+// // 打印Debug
+// func (t *LogStruct) DebugPrint(key, value string) {
+// 	t.Print_cfg = true
+// 	content := key + " " + value
+// 	t.Debug(content)
+// }
 
-func (t *LogStruct) Print() *LogStruct {
-	t.Print_cfg = true
-	return t
-}
+// func (t *LogStruct) Print() *LogStruct {
+// 	t.Print_cfg = true
+// 	return t
+// }
 
-func (t *LogStruct) FormatFileld(field LogFileld) string {
-	str := ""
-	for k, v := range field {
-		str += k + ":\"" + v + "\"" + t.Separator
-	}
-	if len(str) != 0 {
-		str = str[0 : len(str)-1]
-	}
-	return str
-}
+// func (t *LogStruct) FormatFileld(field LogFileld) string {
+// 	str := ""
+// 	for k, v := range field {
+// 		str += k + ":\"" + v + "\"" + t.Separator
+// 	}
+// 	if len(str) != 0 {
+// 		str = str[0 : len(str)-1]
+// 	}
+// 	return str
+// }
 
 // TODO(GgoCoder) 日志轮转
 func InitLogger(fileName string, level zapcore.LevelEnabler) *zap.SugaredLogger {
