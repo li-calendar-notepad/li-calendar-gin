@@ -12,6 +12,7 @@ import (
 )
 
 var RunMode = "debug"
+var IsDocker = "" // 是否为docker模式
 
 func main() {
 

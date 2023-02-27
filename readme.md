@@ -92,7 +92,7 @@ licalendar:leatest
 
 数据卷说明
 ```
--v ~/licalendar/conf:/app/conf # 项目配置目录
+-v ~/licalendar/conf:/app/conf # 项目配置目录，首次运行会报错，运行后可以到目录中执行cp conf.example.ini conf.ini ，重新运行
 -v ~/licalendar/runtime:/app/runtime # 运行缓存、日志等
 -v ~/licalendar/lang:/app/lang # 语言文件
 -v ~/licalendar/database:/app/database # sqlite数据库文件夹

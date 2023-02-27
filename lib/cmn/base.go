@@ -195,7 +195,6 @@ func AssetsTakeFileToPath(assetsPath, targetPath string) error {
 			return err
 		}
 	}
-	fmt.Println(targetPathPath)
 	return ioutil.WriteFile(targetPath, bytes, 0666)
 }
 
