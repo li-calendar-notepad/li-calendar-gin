@@ -10,8 +10,7 @@ type LangStructObj struct {
 	LangContet *cmn.IniConfig
 }
 
-func NewLang(lang string) *LangStructObj {
-	langPath := "lang/" + lang + ".ini"
+func NewLang(langPath string) *LangStructObj {
 	langObj := LangStructObj{}
 	exists, _ := cmn.PathExists(langPath)
 

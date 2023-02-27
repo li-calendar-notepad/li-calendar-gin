@@ -3,10 +3,12 @@ package initialize
 import (
 	"calendar-note-gin/lib/cmn"
 	"calendar-note-gin/lib/global"
+	"calendar-note-gin/lib/language"
 	"calendar-note-gin/models"
 	"calendar-note-gin/routers"
 	"errors"
 	"fmt"
+	"os"
 	"strconv"
 	"time"
 
@@ -159,4 +161,37 @@ func CreateAdminUser() error {
 func RunOther() {
 	InitUserToken()
 	InitVerifyCodeCachePool()
+}
+
+func InitLang(lang string) {
+	langPath := "lang/" + lang + ".ini"
+	exists, err := cmn.PathExists(langPath)
+	if err != nil {
+		global.Logger.Errorln("语言文件不存在", err.Error())
+		os.Exit(1)
+	}
+
+	// 生成语言文件
+	if !exists {
+		global.Logger.Infoln("输出语言文件:", langPath)
+		err := cmn.AssetsTakeFileToPath("lang/zh-cn.ini", "lang/zh-cn.ini")
+		if err != nil {
+			global.Logger.Errorln("输出语言文件出错:", err.Error())
+			os.Exit(1)
+		}
+		err = cmn.AssetsTakeFileToPath("lang/en-us.ini", "lang/en-us.ini")
+		if err != nil {
+			global.Logger.Errorln("输出语言文件出错:", err.Error())
+			os.Exit(1)
+		}
+	}
+
+	exists, err = cmn.PathExists(langPath)
+	if err != nil || !exists {
+		global.Logger.Errorln("语言文件不存在:", langPath)
+		os.Exit(1)
+	}
+
+	global.Lang = language.NewLang(langPath)
+
 }

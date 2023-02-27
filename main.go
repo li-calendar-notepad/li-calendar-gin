@@ -4,7 +4,6 @@ import (
 	"calendar-note-gin/initialize"
 	"calendar-note-gin/lib/cmn"
 	"calendar-note-gin/lib/global"
-	"calendar-note-gin/lib/language"
 	"flag"
 	"fmt"
 	"os"
@@ -68,9 +67,7 @@ func main() {
 	}
 
 	// 语言
-	global.Lang = language.NewLang("zh-cn")
-	// global.Lang = language.NewLang("en-us")
-
+	initialize.InitLang("zh-cn") // en-us
 	// 测试
 	// test()
 
