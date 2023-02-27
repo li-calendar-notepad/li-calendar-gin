@@ -206,7 +206,6 @@ func (t *LogStruct) Print() *LogStruct {
 	return t
 }
 
-//
 func (t *LogStruct) FormatFileld(field LogFileld) string {
 	str := ""
 	for k, v := range field {
@@ -218,11 +217,11 @@ func (t *LogStruct) FormatFileld(field LogFileld) string {
 	return str
 }
 
-//TODO(GgoCoder) 日志轮转
+// TODO(GgoCoder) 日志轮转
 func InitLogger(fileName string, level zapcore.LevelEnabler) *zap.SugaredLogger {
-	writeSyncer := getLogWriter(fileName)
+	fileWriteSyncer := getLogWriter(fileName)
 	encoder := getEncoder()
-	core := zapcore.NewCore(encoder, writeSyncer, level)
+	core := zapcore.NewCore(encoder, zapcore.NewMultiWriteSyncer(fileWriteSyncer, zapcore.AddSync(os.Stdout)), level)
 	logger := zap.New(core, zap.AddCaller())
 	return logger.Sugar()
 }

@@ -12,7 +12,10 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+var RunMode = "debug"
+
 func main() {
+
 	foostr := flag.NewFlagSet("config", flag.ExitOnError)
 	_ = foostr
 	if len(os.Args) > 1 {
@@ -27,10 +30,8 @@ func main() {
 		}
 	}
 
-	// global.Logger.Infoln("li-calendar start!")
-	fmt.Println("li-calendar start!")
+	global.Logger.Infoln("li-calendar start!")
 
-	gin.SetMode(gin.ReleaseMode) // GIN 发布模式
 	// 配置初始化
 	if config, err, errCode := initialize.Conf(getDefaultConfig()); err != nil && errCode == 0 {
 		// 抛出错误
@@ -58,8 +59,8 @@ func main() {
 
 	// 连接数据库
 	if err := initialize.ConnectDb(); err != nil {
-		global.Logger.Errorf("failed to init db, err:%+v", err)
-		cmn.Pln("Error", "数据库错误："+err.Error())
+		global.Logger.Errorln("failed to init db, err:%+v", err)
+		global.Logger.Errorln("数据库错误：" + err.Error())
 	}
 
 	// 用户不存在创建用户
@@ -114,5 +115,10 @@ func getDefaultConfig() map[string]map[string]string {
 }
 
 func init() {
-	global.Logger = cmn.InitLogger("./running.log", global.LoggerLevel)
+	gin.SetMode(RunMode) // GIN 运行模式
+	runtimePath := "./runtime/runlog"
+	if err := os.MkdirAll(runtimePath, 0777); err != nil {
+		panic(err)
+	}
+	global.Logger = cmn.InitLogger(runtimePath+"/running.log", global.LoggerLevel)
 }
