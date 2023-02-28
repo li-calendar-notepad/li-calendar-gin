@@ -2,6 +2,7 @@ package language
 
 import (
 	"calendar-note-gin/lib/cmn"
+	"os"
 	"strings"
 )
 
@@ -9,8 +10,7 @@ type LangStructObj struct {
 	LangContet *cmn.IniConfig
 }
 
-func NewLang(lang string) *LangStructObj {
-	langPath := "lang/" + lang + ".ini"
+func NewLang(langPath string) *LangStructObj {
 	langObj := LangStructObj{}
 	exists, _ := cmn.PathExists(langPath)
 
@@ -18,6 +18,7 @@ func NewLang(lang string) *LangStructObj {
 		langObj.LangContet = cmn.NewIniConfig(langPath) // 读取配置
 	} else {
 		cmn.Pln(cmn.LOG_ERROR, "language file does not exist:"+langPath)
+		os.Exit(1)
 	}
 	return &langObj
 }

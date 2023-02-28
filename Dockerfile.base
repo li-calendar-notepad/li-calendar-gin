@@ -1,7 +1,7 @@
 
 FROM golang:1.19
 
-WORkDIR /root/build
+WORKDIR /root/build
 
 # 执行指令 关闭链接确认
 RUN go env -w GO111MODULE=on \

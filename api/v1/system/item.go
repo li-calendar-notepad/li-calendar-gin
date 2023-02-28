@@ -184,7 +184,7 @@ func (a *ItemApi) MiddlewarePrivate(c *gin.Context) {
 	// 项目不存在 或者用户对不上
 	if err != nil || info.UserId != currentUserInfo.ID {
 		apiReturn.ErrorNoAccess(c)
-		cmn.Debug("项目不存在 或者用户对不上")
+		// cmn.Debug("项目不存在 或者用户对不上")
 		c.Abort()
 		return
 	}
@@ -193,7 +193,7 @@ func (a *ItemApi) MiddlewarePrivate(c *gin.Context) {
 	if info.Password != "" {
 		if a.visitPasswordToVisitTocken(info.Password, info.CreatedAt.Format(cmn.TimeFormatMode2)) != param.VisitToken {
 			apiReturn.ErrorNoAccess(c)
-			cmn.Debug("项目本身存在密码，但是token不正确")
+			// cmn.Debug("项目本身存在密码，但是token不正确")
 			c.Abort()
 			return
 		}

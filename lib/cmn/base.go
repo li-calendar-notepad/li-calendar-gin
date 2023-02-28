@@ -4,6 +4,7 @@ import (
 	"calendar-note-gin/assets"
 	"crypto/md5"
 	"encoding/hex"
+	"fmt"
 	"io/ioutil"
 	"math/rand"
 	"os"
@@ -178,17 +179,21 @@ func InStringArray(arr []string, item string) bool {
 	return true
 }
 
-// 从Assets文件夹中抽取文件
+// 从Assets文件夹中抽取文件保存到路劲
+// AssetsTakeFileToPath("config.ini", targetPath string)
 func AssetsTakeFileToPath(assetsPath, targetPath string) error {
-	// bytes, _ := assets.Asset("assets/conf.example.ini")
 	bytes, _ := assets.Asset("assets/" + assetsPath)
 	targetPathPath := path.Dir(targetPath)
 	exists, err := PathExists(targetPathPath)
+
 	if err != nil {
 		return err
 	}
 	if !exists {
-		os.MkdirAll(targetPathPath, 0666)
+		if err := os.MkdirAll(targetPathPath, 0777); err != nil {
+			fmt.Println(456)
+			return err
+		}
 	}
 	return ioutil.WriteFile(targetPath, bytes, 0666)
 }

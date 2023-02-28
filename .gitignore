@@ -21,7 +21,8 @@
 *.log
 bindata.go
 /conf
-
 /database
 /assets/frontend
 /uploads
+/runtime
+/lang

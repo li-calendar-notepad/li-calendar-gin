@@ -3,10 +3,12 @@ package initialize
 import (
 	"calendar-note-gin/lib/cmn"
 	"calendar-note-gin/lib/global"
+	"calendar-note-gin/lib/language"
 	"calendar-note-gin/models"
 	"calendar-note-gin/routers"
 	"errors"
 	"fmt"
+	"os"
 	"strconv"
 	"time"
 
@@ -34,11 +36,19 @@ func Conf(defaultConfig map[string]map[string]string) (config *cmn.IniConfig, er
 	} else if err != nil {
 
 	} else {
-		errCode = 1
+		// docker 运行模式，生成配置文件
+		if ISDOCER != "" {
+			cmn.AssetsTakeFileToPath("conf.example.ini", "conf/conf.ini")
+			config = cmn.NewIniConfig("conf/conf.ini") // 读取配置
+			config.Default = defaultConfig
+		} else {
+			errCode = 1
+		}
 	}
 	return
 }
 
+// 生成示例配置文件
 func CreateConfExample() (err error) {
 	// 查看配置示例文件是否存在，不存在创建（分别为示例配置和配置文件）
 	exists, err := cmn.PathExists("conf/conf.example.ini")
@@ -114,12 +124,12 @@ func InstallByConfIni() error {
 	// 	cmn.Pln("Warning", "用户已经存在，不创建，仅修改密码")
 	// }
 
-	cmn.Pln("Info", "===================================")
-	cmn.Pln("Info", "请牢记以下账号密码，登陆后可修改")
-	cmn.Pln("Info", "===================================")
-	cmn.Pln("Info", "登录账号："+admin_user_username)
-	cmn.Pln("Info", "登录密码："+admin_user_password)
-	cmn.Pln("Info", "===================================")
+	// cmn.Pln("Info", "===================================")
+	// cmn.Pln("Info", "请牢记以下账号密码，登陆后可修改")
+	// cmn.Pln("Info", "===================================")
+	// cmn.Pln("Info", "登录账号："+admin_user_username)
+	// cmn.Pln("Info", "登录密码："+admin_user_password)
+	// cmn.Pln("Info", "===================================")
 
 	// 初始化完成更新时间 修改配置文件
 	global.Config.SetValue("build", "install_time", strconv.Itoa(int(time.Now().Unix())))
@@ -156,7 +166,41 @@ func CreateAdminUser() error {
 	return global.Db.Create(&newUser).Error
 }
 
+// 运行其他初始化
 func RunOther() {
 	InitUserToken()
 	InitVerifyCodeCachePool()
+}
+
+func InitLang(lang string) {
+	langPath := "lang/" + lang + ".ini"
+	exists, err := cmn.PathExists(langPath)
+	if err != nil {
+		global.Logger.Errorln("语言文件不存在", err.Error())
+		os.Exit(1)
+	}
+
+	// 生成语言文件
+	if !exists {
+		global.Logger.Infoln("输出语言文件:", langPath)
+		err := cmn.AssetsTakeFileToPath("lang/zh-cn.ini", "lang/zh-cn.ini")
+		if err != nil {
+			global.Logger.Errorln("输出语言文件出错:", err.Error())
+			os.Exit(1)
+		}
+		err = cmn.AssetsTakeFileToPath("lang/en-us.ini", "lang/en-us.ini")
+		if err != nil {
+			global.Logger.Errorln("输出语言文件出错:", err.Error())
+			os.Exit(1)
+		}
+	}
+
+	exists, err = cmn.PathExists(langPath)
+	if err != nil || !exists {
+		global.Logger.Errorln("语言文件不存在:", langPath)
+		os.Exit(1)
+	}
+
+	global.Lang = language.NewLang(langPath)
+
 }

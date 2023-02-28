@@ -19,6 +19,8 @@ import (
 )
 
 var DB_DRIVER = "sqlite"
+var RUNCODE = "debug"
+var ISDOCER = "" // 是否为docker模式
 
 func DbInit() (db *gorm.DB, db_err error) {
 	database_drive := global.Config.GetValueStringOrDefault("base", "database_drive")
