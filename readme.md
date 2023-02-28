@@ -20,6 +20,9 @@ Li Calendar - 锂日历记事本
 ## 前端代码地址
 本项目不包含前端代码，前端代码是独立项目请访问：[github](https://github.com/li-calendar-notepad/li-calendar-vue) | [gitee](https://gitee.com/li-calendar-notepad/li-calendar-vue)
 
+## 说明
+目前项目仍处于开发阶段，部分功能未完善，欢迎体验，有问题可以提Issues，暂时不建议作为正式项目使用。
+
 ## 编译
 
 #### 方式一 （通用）
@@ -77,7 +80,7 @@ Li Calendar - 锂日历记事本
 
 ## Docker 运行
 
-**请将前端项目拉取到当前目录，并项目文件夹命名为`web`，否则无法编译成功**
+**请将前端项目拉取到当前目录，并将前端项目命名为`web`，否则无法编译成功**
 
 ```shell
 # 编译镜像
