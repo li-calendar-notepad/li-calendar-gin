@@ -24,10 +24,10 @@ RUN go env -w GO111MODULE=on \
     && go install -a -v github.com/go-bindata/go-bindata/...@latest \
     && go install -a -v github.com/elazarl/go-bindata-assetfs/...@latest \
     && go-bindata-assetfs -o=assets/bindata.go -pkg=assets assets/... \
-    && go build -o li-calendar --ldflags="-X main.RunMode=release main.IsDocker=docker" main.go
+    && go build -o li-calendar --ldflags="-X main.RunMode=release -X main.IsDocker=docker" main.go
 
 
-FROM centos
+FROM ubuntu
 
 WORKDIR /app
 

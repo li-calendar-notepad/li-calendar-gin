@@ -39,6 +39,8 @@ func Conf(defaultConfig map[string]map[string]string) (config *cmn.IniConfig, er
 		// docker 运行模式，生成配置文件
 		if ISDOCER != "" {
 			cmn.AssetsTakeFileToPath("conf.example.ini", "conf/conf.ini")
+			config = cmn.NewIniConfig("conf/conf.ini") // 读取配置
+			config.Default = defaultConfig
 		} else {
 			errCode = 1
 		}
@@ -122,12 +124,12 @@ func InstallByConfIni() error {
 	// 	cmn.Pln("Warning", "用户已经存在，不创建，仅修改密码")
 	// }
 
-	cmn.Pln("Info", "===================================")
-	cmn.Pln("Info", "请牢记以下账号密码，登陆后可修改")
-	cmn.Pln("Info", "===================================")
-	cmn.Pln("Info", "登录账号："+admin_user_username)
-	cmn.Pln("Info", "登录密码："+admin_user_password)
-	cmn.Pln("Info", "===================================")
+	// cmn.Pln("Info", "===================================")
+	// cmn.Pln("Info", "请牢记以下账号密码，登陆后可修改")
+	// cmn.Pln("Info", "===================================")
+	// cmn.Pln("Info", "登录账号："+admin_user_username)
+	// cmn.Pln("Info", "登录密码："+admin_user_password)
+	// cmn.Pln("Info", "===================================")
 
 	// 初始化完成更新时间 修改配置文件
 	global.Config.SetValue("build", "install_time", strconv.Itoa(int(time.Now().Unix())))
