@@ -77,9 +77,11 @@ Li Calendar - 锂日历记事本
 
 ## Docker 运行
 
+**请将前端项目拉取到当前目录，并项目文件夹命名为`web`，否则无法编译成功**
+
 ```shell
 # 编译镜像
-docker build -t licalendar:leatest . 
+docker build -t licalendar:latest . 
 
 # 运行
 docker run --name li-calendar -p 9090:9090 \
@@ -87,12 +89,12 @@ docker run --name li-calendar -p 9090:9090 \
 -v ~/licalendar/runtime:/app/runtime \
 -v ~/licalendar/lang:/app/lang \
 -v ~/licalendar/database:/app/database \
-licalendar:leatest
+licalendar:latest
 ```
 
 数据卷说明
 ```
--v ~/licalendar/conf:/app/conf # 项目配置目录，首次运行会报错，运行后可以到目录中执行cp conf.example.ini conf.ini ，重新运行
+-v ~/licalendar/conf:/app/conf # 项目配置目录
 -v ~/licalendar/runtime:/app/runtime # 运行缓存、日志等
 -v ~/licalendar/lang:/app/lang # 语言文件
 -v ~/licalendar/database:/app/database # sqlite数据库文件夹
