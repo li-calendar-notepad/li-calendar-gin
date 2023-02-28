@@ -36,11 +36,17 @@ func Conf(defaultConfig map[string]map[string]string) (config *cmn.IniConfig, er
 	} else if err != nil {
 
 	} else {
-		errCode = 1
+		// docker 运行模式，生成配置文件
+		if ISDOCER != "" {
+			cmn.AssetsTakeFileToPath("conf.example.ini", "conf/conf.ini")
+		} else {
+			errCode = 1
+		}
 	}
 	return
 }
 
+// 生成示例配置文件
 func CreateConfExample() (err error) {
 	// 查看配置示例文件是否存在，不存在创建（分别为示例配置和配置文件）
 	exists, err := cmn.PathExists("conf/conf.example.ini")
@@ -158,6 +164,7 @@ func CreateAdminUser() error {
 	return global.Db.Create(&newUser).Error
 }
 
+// 运行其他初始化
 func RunOther() {
 	InitUserToken()
 	InitVerifyCodeCachePool()

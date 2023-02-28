@@ -127,7 +127,6 @@ func RunLog() *LogStruct {
 		runLogStatic.File = f
 		runLogStatic.Writer = io.MultiWriter(f)
 	} else {
-		// 不用每次都操作
 		if runLogStatic.File == nil {
 			f, _ := os.OpenFile(log_file_name, os.O_APPEND|os.O_WRONLY, 0666)
 			runLogStatic.File = f

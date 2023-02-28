@@ -15,6 +15,8 @@ var RunMode = "debug"
 var IsDocker = "" // 是否为docker模式
 
 func main() {
+	initialize.RUNCODE = RunMode
+	initialize.ISDOCER = IsDocker
 
 	foostr := flag.NewFlagSet("config", flag.ExitOnError)
 	_ = foostr
@@ -30,15 +32,12 @@ func main() {
 		}
 	}
 
-	global.Logger.Infoln("li-calendar start!")
-
-	// 配置初始化
+	// 配置文件初始化
 	if config, err, errCode := initialize.Conf(getDefaultConfig()); err != nil && errCode == 0 {
 		// 抛出错误
 		cmn.Pln(cmn.LOG_ERROR, "配置文件创建错误:"+err.Error())
 	} else if errCode == 1 {
 		// 配置文件不存在，需要浏览器初始流程
-		// global.Logger.Infoln("conf/conf.ini is not exist, start init from web!")
 		global.Logger.Errorln("配置文件 conf/conf.ini 不存在, 请执行 \"li-calendar config\" 来创建配置文件")
 		os.Exit(1)
 		// initialize.RouterNeedWebInit() // web初始化方式，暂时未开发
@@ -69,6 +68,8 @@ func main() {
 
 	// 语言
 	initialize.InitLang("zh-cn") // en-us
+
+	global.Logger.Infoln("li-calendar success start!")
 	// 测试
 	// test()
 
