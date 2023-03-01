@@ -66,6 +66,7 @@ func Routers() *gin.Engine {
 	system.InitSubjectRouter(privateGroup)
 	system.InitUserRouter(privateGroup)
 	system.InitSpecialDayRouter(privateGroup)
+	system.InitCalendarEcharts(privateGroup)
 
 	// 管理员
 	adminGroup.Use(middleware.LoginInterceptor)
