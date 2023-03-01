@@ -1,5 +1,7 @@
 package models
 
+import "calendar-note-gin/lib/global"
+
 // 事件主题
 type Subject struct {
 	BaseModel
@@ -11,4 +13,10 @@ type Subject struct {
 	Item Item
 
 	SubjectId uint `gorm:"-"`
+}
+
+// 获取主题列表
+func (m *Subject) GetList() (list []Subject) {
+	global.Db.Model(m).Find(&list)
+	return
 }

@@ -2,8 +2,10 @@ package system
 
 import (
 	"calendar-note-gin/api/v1/common/apiReturn"
+	"calendar-note-gin/lib/cmn"
 	"calendar-note-gin/lib/global"
 	"calendar-note-gin/models"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
@@ -14,6 +16,7 @@ type CalendarEchartsApi struct {
 
 // 日历图表日期参数
 type ParamCalendarEchartsDate struct {
+	ItemId    uint   `json:"itemId"`
 	StartTime string `json:"startTime"`
 	EndTime   string `json:"endTime"`
 }
@@ -42,4 +45,25 @@ func (a *CalendarEchartsApi) PieChartTopic(c *gin.Context) {
 		})
 	}
 	apiReturn.SuccessData(c, pieDatas)
+}
+
+// 折线图和日期的统计
+func (a *CalendarEchartsApi) LineTopicCount(c *gin.Context) {
+	param := ParamCalendarEchartsDate{}
+	if err := c.ShouldBindBodyWith(&param, binding.JSON); err != nil {
+		apiReturn.Error(c, global.Lang.Get("common.api_error_param_format")+err.Error())
+		c.Abort()
+		return
+	}
+
+	mSubject := models.Subject{ItemId: param.ItemId}
+	subjectList := mSubject.GetList()
+
+	start, err := time.ParseInLocation(cmn.TimeFormatMode1, param.StartTime, time.Local)
+	end, err := time.ParseInLocation(cmn.TimeFormatMode1, param.StartTime, time.Local)
+	start.After()
+
+	// 循环出每天日期，按主题查询每天的总数据
+
+	// 最终数据{dates:[],datas{},topics{}}
 }
