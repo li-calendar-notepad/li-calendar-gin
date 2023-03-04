@@ -17,6 +17,6 @@ type Subject struct {
 
 // 获取主题列表
 func (m *Subject) GetList() (list []Subject) {
-	global.Db.Model(m).Find(&list)
+	global.Db.Where(m).Find(&list)
 	return
 }

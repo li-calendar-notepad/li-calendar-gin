@@ -5,7 +5,6 @@ import (
 	"calendar-note-gin/lib/cmn"
 	"calendar-note-gin/lib/global"
 	"calendar-note-gin/models"
-	"fmt"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -18,8 +17,8 @@ type CalendarEchartsApi struct {
 // 日历图表日期参数
 type ParamCalendarEchartsDate struct {
 	ItemId    uint   `json:"itemId"`
-	StartTime string `json:"startTime"`
-	EndTime   string `json:"endTime"`
+	StartDate string `json:"startDate"`
+	EndDate   string `json:"endDate"`
 }
 
 type ParamLineDates struct {
@@ -39,13 +38,16 @@ func (a *CalendarEchartsApi) PieChartTopic(c *gin.Context) {
 	}
 
 	// 查询主题，对每个主题分别查询时间总数
-	subjects := []models.Subject{}
 	pieDatas := []map[string]interface{}{}
-	global.Db.Find(&subjects)
-
+	mSubject := models.Subject{}
+	mSubject.ItemId = param.ItemId
+	subjects := mSubject.GetList()
 	for _, v := range subjects {
 		var count int64
-		global.Db.Model(&models.Event{}).Where("title like ?", "#"+v.Title+"#").Count(&count)
+		global.Db.Model(&models.Event{}).
+			Where("start_time >= ?", param.StartDate+" 00:00:00").
+			Where("end_time <= ?", param.EndDate+" 23:59:59").
+			Where("title like ?", "#"+v.Title+"#%").Count(&count)
 		pieDatas = append(pieDatas, map[string]interface{}{
 			"name":  v.Title,
 			"value": count,
@@ -65,17 +67,6 @@ func (a *CalendarEchartsApi) LineTopicCount(c *gin.Context) {
 
 	mSubject := models.Subject{ItemId: param.ItemId}
 	subjectList := mSubject.GetList()
-
-	// start, _ := cmn.StrToTime(cmn.TimeFormatMode1, param.StartTime)
-	// end, _ := cmn.StrToTime(cmn.TimeFormatMode1, param.EndTime)
-
-	// start.Add(1 * 24 * time.Hour).Format(cmn.TimeFormatMode1)
-	// start.AddDate(0, 0, -1)
-	// currentTime := start
-	// forlastTime := end.Add(1 * 24 * time.Hour)
-	// for currentTime != end {
-	// 	currentTime = start.Add(1 * 24 * time.Hour)
-	// 	currentTimeStr = currentTime.Format(cmn.TimeFormatMode1)
 	datas := map[string][]int64{}
 	for _, v := range subjectList {
 		var count int64
@@ -91,9 +82,9 @@ func (a *CalendarEchartsApi) LineTopicCount(c *gin.Context) {
 			} else {
 				endTime, _ = cmn.StrToTime(cmn.TimeYYYY_mm_dd, currentDate)
 			}
-			fmt.Println("ddd", startTimeStr+" 00:00:00", endTime.Format(cmn.TimeYYYY_mm_dd)+" 23:59:59")
+			// fmt.Println("ddd", startTimeStr+" 00:00:00", endTime.Format(cmn.TimeYYYY_mm_dd)+" 23:59:59")
 			global.Db.Model(&models.Event{}).
-				Where("title like ?", "#"+v.Title+"#").
+				Where("title like ?", "#"+v.Title+"#%").
 				Where("start_time >= ?", startTimeStr+" 00:00:00").
 				Where("end_time <= ?", endTime.Format(cmn.TimeYYYY_mm_dd)+" 23:59:59").
 				Count(&count)
