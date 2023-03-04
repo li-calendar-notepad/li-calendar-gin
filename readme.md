@@ -17,8 +17,8 @@ Li Calendar - 锂日历记事本
 
 前身[日历记事本PHP版本](https://gitee.com/hslr/calendar_notepad)，因为工作中常常要记录每天的工作日志，所以2020年上半年，抽了几天的下班时间开发了PHP版本，稳定运行了一年，但是它有些不足，2021年决定重新启动此项目，对他进行优化和增加功能并进行了技术升级。后期接触了GO+Gin+Vue3+ElementUI-Plus并重新开发了本项目 锂日历记事本。
 
-## 前端项目
-本项目不包含前端代码，前端是由`Vue3`+`Element-UI Plus`+`Fullcalendar`，前端是独立项目请访问：[github](https://github.com/li-calendar-notepad/li-calendar-vue) | [gitee](https://gitee.com/li-calendar-notepad/li-calendar-vue)
+## 前端源码
+项目进行了前后端分离，所以本源码不包含前端，前端是由`Vue3`+`Element-UI Plus`+`Fullcalendar`，前端项目源码请访问：[github](https://github.com/li-calendar-notepad/li-calendar-vue) | [gitee](https://gitee.com/li-calendar-notepad/li-calendar-vue)
 
 ## 说明
 目前项目仍处于开发阶段，部分功能未完善，欢迎体验，有问题可以提Issues，暂时不建议作为正式项目使用。
@@ -26,16 +26,16 @@ Li Calendar - 锂日历记事本
 ## 截图
 
 日历首页
-![](./readme_src/screenshot/item_home.png)
+<img alt="li calendar" style="border:1px solid #dce1e4;" src="./readme_src/screenshot/item_home.png" />
 
 深色模式
-![](./readme_src/screenshot/dark.png)
+<img alt="li calendar" style="border:1px solid #dce1e4;" src="./readme_src/screenshot/dark.png" />
 
 事件内容
-![](./readme_src/screenshot/event_content.png)
+<img alt="li calendar" style="border:1px solid #dce1e4;" src="./readme_src/screenshot/event_content.png" />
 
 事件模板
-![](./readme_src/screenshot/item_home_model.png)
+<img alt="li calendar" style="border:1px solid #dce1e4;" src="./readme_src/screenshot/item_home_model.png" />
 
 ## 编译
 
