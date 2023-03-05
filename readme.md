@@ -23,7 +23,7 @@ Li Calendar - 锂日历记事本
 - [x] 深色模式支持
 - [x] 强化事件模板功能，并支持拖拽
 - [x] 风格支持自定义，支持导入导出
-- [x] 节假日改为特殊日期，可自定义上传
+- [x] 节假日改为特殊日期，可导入。后期可根据用户提供支持其他地区或国家假期
 - [x] docker运行
 - [ ] 按时间范围，分享日历视图
 - [ ] 设置待办邮件提醒
@@ -132,6 +132,10 @@ licalendar:latest
 -v ~/licalendar/lang:/app/lang # 语言文件目录
 -v ~/licalendar/database:/app/database # sqlite数据库目录
 ```
+
+## ⛺ (假日、风格)导入文件
+特殊日期和风格文件下载（特殊日期包含中国法定节假日2020-2023年文件，欢迎提供其他地区或者国家假期数据）
+[去查看和下载，持续更新](https://cloud.enianteam.com/#/share/ugwzotae)
 
 ## 🎁 打赏
 

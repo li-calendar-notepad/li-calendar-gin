@@ -69,9 +69,7 @@ func main() {
 
 	// 语言
 	initialize.InitLang("zh-cn") // en-us
-	initialize.InitLang("zh-cn") // en-us
 
-	global.Logger.Infoln("li-calendar success start!")
 	global.Logger.Infoln("li-calendar success start!")
 	// 测试
 	// test()
