@@ -68,13 +68,18 @@ func CreateConfExample() (err error) {
 func Router() {
 	r := routers.Routers()
 	port := global.Config.GetValueString("base", "http_port")
+	version := cmn.GetSysVersionInfo()
+	fmt.Println("==========================================================================")
+	fmt.Println("欢迎使用锂日历，版本：", version.Version, "网址：http://localhost:"+port)
+	fmt.Println("Welcome to use li-calendar. version:", version.Version, "  URL:http://localhost"+port)
+	fmt.Println("==========================================================================")
+
 	r.Run(":" + port)
 }
 
 // 需要web进行初始化
 func RouterNeedWebInit() {
 	port := global.Config.GetValueString("base", "http_port")
-	fmt.Println("准备启动web")
 	cmn.Pln("Info", "首次运行请浏览器前往：http://localhost:"+port+"/#/install")
 	r := gin.Default()
 	r.Run(":" + port)

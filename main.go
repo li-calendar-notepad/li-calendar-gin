@@ -59,6 +59,7 @@ func main() {
 	if err := initialize.ConnectDb(); err != nil {
 		// global.Logger.Errorln("failed to init db, err:%+v", err)
 		global.Logger.Errorln("数据库连接错误", err.Error())
+		os.Exit(1)
 	}
 
 	// 用户不存在创建用户
@@ -68,7 +69,9 @@ func main() {
 
 	// 语言
 	initialize.InitLang("zh-cn") // en-us
+	initialize.InitLang("zh-cn") // en-us
 
+	global.Logger.Infoln("li-calendar success start!")
 	global.Logger.Infoln("li-calendar success start!")
 	// 测试
 	// test()

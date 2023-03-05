@@ -21,6 +21,7 @@ const (
 	TimeFormatMode4 = "2006-01-02 15:04"    // 标准格式 无秒
 	TimeFormatMode2 = "Mon Jan 2 15:04:05 -0700 MST 2006"
 	TimeFormatMode3 = "Mon, 2 Jan 2006 15:04:05 -0700 MST" // webdav格式
+	TimeYYYY_mm_dd  = "2006-01-02"
 
 	// 随机码字典
 

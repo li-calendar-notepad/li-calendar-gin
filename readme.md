@@ -13,17 +13,46 @@ Li Calendar - 锂日历记事本
 
 
 
-## 介绍
+## 🛸 介绍
 
 前身[日历记事本PHP版本](https://gitee.com/hslr/calendar_notepad)，因为工作中常常要记录每天的工作日志，所以2020年上半年，抽了几天的下班时间开发了PHP版本，稳定运行了一年，但是它有些不足，2021年决定重新启动此项目，对他进行优化和增加功能并进行了技术升级。后期接触了GO+Gin+Vue3+ElementUI-Plus并重新开发了本项目 锂日历记事本。
 
-## 前端代码地址
-本项目不包含前端代码，前端代码是独立项目请访问：[github](https://github.com/li-calendar-notepad/li-calendar-vue) | [gitee](https://gitee.com/li-calendar-notepad/li-calendar-vue)
+## 🌱 相对PHP版本增加以及准备做的
+- [x] 全新UI
+- [x] 内容选用高级编辑器支持传文件，粘贴图片
+- [x] 深色模式支持
+- [x] 强化事件模板功能，并支持拖拽
+- [x] 风格支持自定义，支持导入导出
+- [x] 节假日改为特殊日期，可自定义上传
+- [x] docker运行
+- [ ] 按时间范围，分享日历视图
+- [ ] 设置待办邮件提醒
+- [ ] 速记功能
+- [ ] 事件时间线视图
+- [ ] 单事件收藏、分享
 
-## 说明
+
+## ⌨️ 前端源码
+项目进行了前后端分离，所以本源码不包含前端，前端是由`Vue3`+`Element-UI Plus`+`Fullcalendar`，前端项目源码请访问：[github](https://github.com/li-calendar-notepad/li-calendar-vue) | [gitee](https://gitee.com/li-calendar-notepad/li-calendar-vue)
+
+## 🚥 说明
 目前项目仍处于开发阶段，部分功能未完善，欢迎体验，有问题可以提Issues，暂时不建议作为正式项目使用。
 
-## 编译
+## 🖼️ 截图
+
+日历首页
+<img alt="li calendar" style="border:1px solid #dce1e4;" src="./readme_src/screenshot/item_home.png" />
+
+深色模式
+<img alt="li calendar" style="border:1px solid #dce1e4;" src="./readme_src/screenshot/dark.png" />
+
+事件内容
+<img alt="li calendar" style="border:1px solid #dce1e4;" src="./readme_src/screenshot/event_content.png" />
+
+事件模板
+<img alt="li calendar" style="border:1px solid #dce1e4;" src="./readme_src/screenshot/item_home_model.png" />
+
+## 💾 编译
 
 #### 方式一 （通用）
 
@@ -58,7 +87,7 @@ Li Calendar - 锂日历记事本
     make build
     ```
 
-## 运行
+## 🚄 运行
 
 #### 生成配置文件：
 ```
@@ -78,7 +107,7 @@ Li Calendar - 锂日历记事本
 浏览器打开：http://[你的域名或ip]:9090
 
 
-## Docker 运行
+## 💎 Docker 运行
 
 **请将前端项目拉取到当前目录，并将前端项目命名为`web`，否则无法编译成功**
 
@@ -89,16 +118,21 @@ docker build -t licalendar:latest .
 # 运行
 docker run --name li-calendar -p 9090:9090 \
 -v ~/licalendar/conf:/app/conf \
+-v ~/licalendar/uploads:/app/uploads \
 -v ~/licalendar/runtime:/app/runtime \
 -v ~/licalendar/lang:/app/lang \
--v ~/licalendar/database:/app/database \
 licalendar:latest
 ```
 
-数据卷说明
+更多数据卷说明
 ```
 -v ~/licalendar/conf:/app/conf # 项目配置目录
+-v ~/licalendar/uploads:/app/uploads # 上传的文件目录
 -v ~/licalendar/runtime:/app/runtime # 运行缓存、日志等
--v ~/licalendar/lang:/app/lang # 语言文件
--v ~/licalendar/database:/app/database # sqlite数据库文件夹
+-v ~/licalendar/lang:/app/lang # 语言文件目录
+-v ~/licalendar/database:/app/database # sqlite数据库目录
 ```
+
+## 🎁 打赏
+
+开源不易，如果你喜欢本项目或者觉得项目对你有帮助，欢迎进行[🧧打赏作者🧧](https://blog.enianteam.com/u/sun/content/11#%E6%89%93%E8%B5%8F)。记得加作者留名。在此感谢
