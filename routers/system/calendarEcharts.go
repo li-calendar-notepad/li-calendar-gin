@@ -7,8 +7,10 @@ import (
 )
 
 func InitCalendarEcharts(router *gin.RouterGroup) {
+	itemApi := v1.ApiGroupApp.ItemApi
 	calendarEchartsApi := v1.ApiGroupApp.CalendarEchartsApi
-	r := router.Group("item")
+	r := router.Group("item").Use(itemApi.MiddlewarePrivate)
+
 	r.POST("lineTopicCount", calendarEchartsApi.LineTopicCount)
 	r.POST("pieChartTopic", calendarEchartsApi.PieChartTopic)
 }
