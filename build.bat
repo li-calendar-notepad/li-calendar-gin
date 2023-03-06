@@ -1,5 +1,5 @@
 cd web 
-@REM npm run build 
+npm run build 
 rd ..\assets\frontend
 xcopy .\dist\ ..\assets\frontend /s /i /y
 cd ..\
