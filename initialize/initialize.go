@@ -71,7 +71,7 @@ func Router() {
 	version := cmn.GetSysVersionInfo()
 	fmt.Println("==========================================================================")
 	fmt.Println("欢迎使用锂日历，版本：", version.Version, "网址：http://localhost:"+port)
-	fmt.Println("Welcome to use li-calendar. version:", version.Version, "  URL:http://localhost"+port)
+	fmt.Println("Welcome to use li-calendar. version:", version.Version, "  URL:http://localhost:"+port)
 	fmt.Println("==========================================================================")
 
 	r.Run(":" + port)
