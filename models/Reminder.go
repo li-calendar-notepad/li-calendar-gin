@@ -10,7 +10,7 @@ import (
 type EventReminder struct {
 	BaseModel
 	EventId      uint   `json:"eventId"`                            // 事件id
-	ReminderTime string `json:"time" gorm:"type:varchar(20),index"` // 提醒时间(索引)，格式：202303162126
+	ReminderTime string `json:"time" gorm:"type:varchar(20);index"` // 提醒时间(索引)，格式：202303162126
 	Method       uint   `json:"method" gorm:"type:int(2)"`          // 提醒方式 1.不重复提醒 2.每天 3.每周 4.每月 5.每年
 	Status       uint   `json:"status" gorm:"type:int(1)"`          // 状态 0.待执行 1.已执行 2.已过期
 

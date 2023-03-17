@@ -1,4 +1,4 @@
-package ability
+package eventReminder
 
 import (
 	"calendar-note-gin/lib/cmn"
@@ -11,24 +11,32 @@ import (
 // 每分钟去库中查找一次当前时间需要提醒的事件，
 // 然后进行线程提醒
 
-var ticker *time.Ticker
+// var ticker *time.Ticker
 
-func StartEventReminder() {
-	ticker = time.NewTicker(1 * time.Second)
-	defer ticker.Stop()
+type EventReminder struct {
+	Ticker *time.Ticker
+}
 
-	for ticker != nil {
-		select {
-		case <-ticker.C:
-			runTask()
+func (e *EventReminder) Start() {
+	go func() {
+		e.Ticker = time.NewTicker(1 * time.Second)
+		defer e.Ticker.Stop()
+
+		for e.Ticker != nil {
+			select {
+			case <-e.Ticker.C:
+				fmt.Println("定时文物")
+				runTask()
+			}
 		}
-	}
+	}()
+
 }
 
 // 停止定时器任务
-func StopEventReminder() {
-	ticker.Stop()
-	ticker = nil
+func (e *EventReminder) Stop() {
+	e.Ticker.Stop()
+	e.Ticker = nil
 }
 
 // 运行任务

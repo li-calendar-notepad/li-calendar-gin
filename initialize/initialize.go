@@ -1,6 +1,7 @@
 package initialize
 
 import (
+	"calendar-note-gin/ability"
 	"calendar-note-gin/lib/cmn"
 	"calendar-note-gin/lib/global"
 	"calendar-note-gin/lib/language"
@@ -175,6 +176,11 @@ func CreateAdminUser() error {
 func RunOther() {
 	InitUserToken()
 	InitVerifyCodeCachePool()
+}
+
+// db连接后执行
+func RunAfterDb() {
+	ability.EventReminder.Start() // 事件提醒定时器
 }
 
 func InitLang(lang string) {

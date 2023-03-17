@@ -75,6 +75,7 @@ func main() {
 	// test()
 
 	// 任务
+	initialize.RunAfterDb()
 
 	// 初始化路由
 	initialize.Router()
