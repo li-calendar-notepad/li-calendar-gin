@@ -2,8 +2,8 @@ package eventReminder
 
 import (
 	"calendar-note-gin/lib/cmn"
+	"calendar-note-gin/lib/global"
 	"calendar-note-gin/models"
-	"fmt"
 	"time"
 )
 
@@ -19,13 +19,13 @@ type EventReminder struct {
 
 func (e *EventReminder) Start() {
 	go func() {
-		e.Ticker = time.NewTicker(1 * time.Second)
+		e.Ticker = time.NewTicker(60 * time.Second)
 		defer e.Ticker.Stop()
 
 		for e.Ticker != nil {
 			select {
 			case <-e.Ticker.C:
-				fmt.Println("定时文物")
+				global.Logger.Debug("定时提醒任务执行中")
 				runTask()
 			}
 		}
@@ -51,7 +51,8 @@ func runTask() bool {
 	for _, v := range eventReminderList {
 		// 判断任务的方式，Method
 		if v.Method == 1 {
-			fmt.Println("仅执行一次的任务")
+			// fmt.Println("仅执行一次的任务")
+			global.Logger.Debug("定时提醒任务执行", "任务id:", v.ID, "事件id:", v.EventId)
 		}
 	}
 

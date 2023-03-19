@@ -10,6 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/gin/binding"
+	"gorm.io/gorm"
 )
 
 // var ApiReturn = apiReturn.ApiReturn
@@ -22,14 +23,17 @@ type EventCreateOne struct {
 }
 
 type ParamEventCreateData struct {
-	EventId   uint
-	ItemId    uint
-	Title     string
-	Content   string
-	ClassName string
-	StartTime string
-	EndTime   string
-	Color     string
+	EventId        uint
+	ItemId         uint
+	Title          string
+	Content        string
+	ClassName      string
+	StartTime      string
+	EndTime        string
+	Color          string
+	ReminderBefore int64
+	ReminderTime   string
+	IsOnlyTime     bool // 是否仅更新时间
 }
 
 type ParamEventGetList struct {
@@ -46,21 +50,68 @@ func (a *EventApi) UpdateByEventId(c *gin.Context) {
 		return
 	}
 
+	var reminderTime time.Time
+	{
+		var err error
+		reminderTime, err = cmn.StrToTime(cmn.TimeFormatMode1, param.StartTime)
+		if err != nil {
+			apiReturn.Error(c, global.Lang.GetAndInsert("common.api_error_param_format", "[", err.Error(), "]"))
+			return
+		}
+	}
+
 	startTime := a.strToSqlNullTime(param.StartTime)
 	endTime := a.strToSqlNullTime(param.EndTime)
+	updateData := map[string]interface{}{
+		"start_time": startTime,
+		"end_time":   endTime,
+	}
 
+	// 如果非仅更新时间，将允许更新其他数据
+	if !param.IsOnlyTime {
+		updateData["title"] = param.Title
+		updateData["item_id"] = param.ItemId
+		updateData["class_name"] = param.ClassName
+		updateData["content"] = param.Content
+		updateData["reminder_before"] = param.ReminderBefore
+	}
 	mEvent := models.Event{}
 	err := mEvent.UpdateByCondition(map[string]interface{}{
 		"id": param.EventId,
-	}, map[string]interface{}{
-		"title":      param.Title,
-		"item_id":    param.ItemId,
-		"class_name": param.ClassName,
-		// "color":      param.Color,
-		"content":    param.Content,
-		"start_time": startTime,
-		"end_time":   endTime,
-	})
+	}, updateData)
+
+	if err != nil {
+		apiReturn.ErrorDatabase(c, err.Error())
+		return
+	}
+
+	if !param.IsOnlyTime {
+		// 判断是否需要提醒服务
+		mEventReminder := models.EventReminder{}
+		found, foundErr := mEventReminder.GetByEventId(param.EventId)
+		if param.ReminderBefore == 0 {
+			// 删除定时任务
+			if foundErr == nil {
+				found.Del()
+			}
+		} else {
+			reminderTimeStr := reminderTime.Add(-time.Duration(param.ReminderBefore) * time.Minute).Format(cmn.TIME_MODE_REMINDER_TIME)
+			// 查询之前是否存在
+			if foundErr == gorm.ErrRecordNotFound {
+				global.Logger.Debug("添加新定时任务")
+				newEventReminder := models.EventReminder{
+					EventId:      param.EventId,
+					ReminderTime: reminderTimeStr,
+					Method:       1,
+				}
+				newEventReminder.Add()
+			} else {
+				global.Logger.Debug("更新定时任务")
+				found.ReminderTime = reminderTimeStr
+				found.UpdateByEventId(param.EventId)
+			}
+		}
+	}
 
 	if err != nil {
 		apiReturn.Error(c, global.Lang.Get("common.api_update_fail")+err.Error())
@@ -118,7 +169,6 @@ func (a *EventApi) GetListAndSpecialDayByTimeScope(c *gin.Context) {
 		endTime, _ := cmn.StrToTime(cmn.TimeFormatMode1, param.EndTime)
 		startTimeStr := startTime.Add(-10 * 24 * time.Hour).Format(cmn.TimeFormatMode1)
 		endTimeStr := endTime.Add(10 * 24 * time.Hour).Format(cmn.TimeFormatMode1)
-		// fmt.Println("事件查询时间范围", startTimeStr, endTimeStr)
 		err := global.Db.Where("item_id=?", param.ItemId).Find(&events, "start_time >= ? AND start_time <= ?", startTimeStr, endTimeStr).Count(&count).Error
 		if err != nil {
 			apiReturn.Error(c, global.Lang.Get("common.db_error")+err.Error())
@@ -185,13 +235,14 @@ func (a *EventApi) GetInfo(c *gin.Context) {
 	}
 	// 整理格式化
 	apiReturn.SuccessData(c, gin.H{
-		"eventId":    eventInfo.ID,
-		"title":      eventInfo.Title,
-		"content":    eventInfo.Content,
-		"className":  eventInfo.ClassName,
-		"startTime":  eventInfo.StartTime.Time.Format(cmn.TimeFormatMode1),
-		"endTime":    eventInfo.EndTime.Time.Format(cmn.TimeFormatMode1),
-		"createTime": eventInfo.CreatedAt.Format(cmn.TimeFormatMode1),
+		"eventId":        eventInfo.ID,
+		"title":          eventInfo.Title,
+		"content":        eventInfo.Content,
+		"className":      eventInfo.ClassName,
+		"reminderBefore": eventInfo.ReminderBefore,
+		"startTime":      eventInfo.StartTime.Time.Format(cmn.TimeFormatMode1),
+		"endTime":        eventInfo.EndTime.Time.Format(cmn.TimeFormatMode1),
+		"createTime":     eventInfo.CreatedAt.Format(cmn.TimeFormatMode1),
 	})
 }
 
@@ -207,6 +258,10 @@ func (a *EventApi) DeleteByIdAndItemId(c *gin.Context) {
 	if err := mEvent.DeleteByIdAndItemId(param.EventId, param.ItemId); err != nil {
 		apiReturn.Error(c, global.Lang.GetAndInsert("common.db_error", "[", err.Error(), "]"))
 	} else {
+		mEventReminder := models.EventReminder{}
+		if found, err := mEventReminder.GetByEventId(param.EventId); err == nil {
+			found.Del()
+		}
 		apiReturn.Success(c)
 	}
 
@@ -226,13 +281,36 @@ func (a *EventApi) CreateOne(c *gin.Context) {
 
 	mEvent := models.Event{}
 	res, err := mEvent.Create(models.Event{
-		Title:     param.Title,
-		ItemId:    param.ItemId,
-		ClassName: param.ClassName,
-		Content:   param.Content,
-		StartTime: startTime,
-		EndTime:   endTime,
+		Title:          param.Title,
+		ItemId:         param.ItemId,
+		ClassName:      param.ClassName,
+		Content:        param.Content,
+		StartTime:      startTime,
+		EndTime:        endTime,
+		ReminderBefore: param.ReminderBefore,
 	})
+
+	if err != nil {
+		apiReturn.ErrorDatabase(c, err.Error())
+		return
+	}
+
+	// 定时提醒不等于0,创建定时提醒
+	if param.ReminderBefore != 0 {
+		var reminderTime time.Time
+		if reminderTime, err = cmn.StrToTime(cmn.TimeFormatMode1, param.StartTime); err != nil {
+			apiReturn.Error(c, global.Lang.GetAndInsert("common.api_error_param_format", "[", err.Error(), "]"))
+			return
+		}
+		reminderTimeStr := reminderTime.Add(-time.Duration(param.ReminderBefore) * time.Minute).Format(cmn.TIME_MODE_REMINDER_TIME)
+		newEventReminder := models.EventReminder{
+			EventId:      res.ID,
+			ReminderTime: reminderTimeStr,
+			Method:       1,
+		}
+		newEventReminder.Add()
+	}
+
 	if err != nil {
 		apiReturn.Error(c, global.Lang.Get("common.api_create_fail")+err.Error())
 	} else {
