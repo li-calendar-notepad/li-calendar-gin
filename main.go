@@ -9,6 +9,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 var RunMode = "debug"
@@ -120,5 +121,12 @@ func init() {
 	if err := os.MkdirAll(runtimePath, 0777); err != nil {
 		panic(err)
 	}
-	global.Logger = cmn.InitLogger(runtimePath+"/running.log", global.LoggerLevel)
+
+	var level zap.AtomicLevel
+	if initialize.RUNCODE == "debug" {
+		level = zap.NewAtomicLevelAt(zap.DebugLevel)
+	} else {
+		level = global.LoggerLevel
+	}
+	global.Logger = cmn.InitLogger(runtimePath+"/running.log", level)
 }
