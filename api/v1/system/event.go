@@ -85,31 +85,30 @@ func (a *EventApi) UpdateByEventId(c *gin.Context) {
 		return
 	}
 
-	if !param.IsOnlyTime {
-		// 判断是否需要提醒服务
-		mEventReminder := models.EventReminder{}
-		found, foundErr := mEventReminder.GetByEventId(param.EventId)
-		if param.ReminderBefore == 0 {
-			// 删除定时任务
-			if foundErr == nil {
-				found.Del()
+	// 查询修改的记录
+	eventInfo, _ := mEvent.GetEventById(param.EventId)
+	mEventReminder := models.EventReminder{}
+	found, foundErr := mEventReminder.GetByEventId(param.EventId)
+	if eventInfo.ReminderBefore == 0 {
+		// 删除定时任务
+		if foundErr == nil {
+			found.Del()
+		}
+	} else {
+		reminderTimeStr := reminderTime.Add(-time.Duration(eventInfo.ReminderBefore) * time.Minute).Format(cmn.TIME_MODE_REMINDER_TIME)
+		// 查询之前是否存在
+		if foundErr == gorm.ErrRecordNotFound {
+			global.Logger.Debug("添加新定时任务")
+			newEventReminder := models.EventReminder{
+				EventId:      eventInfo.ID,
+				ReminderTime: reminderTimeStr,
+				Method:       1,
 			}
+			newEventReminder.Add()
 		} else {
-			reminderTimeStr := reminderTime.Add(-time.Duration(param.ReminderBefore) * time.Minute).Format(cmn.TIME_MODE_REMINDER_TIME)
-			// 查询之前是否存在
-			if foundErr == gorm.ErrRecordNotFound {
-				global.Logger.Debug("添加新定时任务")
-				newEventReminder := models.EventReminder{
-					EventId:      param.EventId,
-					ReminderTime: reminderTimeStr,
-					Method:       1,
-				}
-				newEventReminder.Add()
-			} else {
-				global.Logger.Debug("更新定时任务")
-				found.ReminderTime = reminderTimeStr
-				found.UpdateByEventId(param.EventId)
-			}
+			global.Logger.Debug("更新定时任务")
+			found.ReminderTime = reminderTimeStr
+			found.UpdateByEventId(eventInfo.ID)
 		}
 	}
 
