@@ -4,7 +4,6 @@ import (
 	"calendar-note-gin/lib/cmn"
 	"calendar-note-gin/lib/global"
 	"calendar-note-gin/models"
-	"fmt"
 	"strconv"
 	"sync"
 	"time"
@@ -33,8 +32,12 @@ func (e *EventReminder) Start() {
 		for e.Ticker != nil {
 			select {
 			case <-e.Ticker.C:
-				global.Logger.Debug("定时提醒任务执行中")
+				title := time.Now().Format(cmn.TimeFormatMode1)
+				startTime := time.Now().Unix()
+				global.Logger.Debug("== 定时提醒任务执行开始", title)
 				runTask()
+				global.Logger.Debug("== 定时提醒任务执行结束", title, " 用时:", time.Now().Unix()-startTime)
+
 			}
 		}
 	}()
@@ -50,9 +53,10 @@ func (e *EventReminder) Stop() {
 // 工作池
 func SendMailWorker(id int, jobs <-chan MailInfo, results chan<- int) {
 	for j := range jobs {
-		lock.Lock()
-		fmt.Println("进程:", id, "模拟发送邮件-", j.Email, j.Title)
-		lock.Unlock()
+		// lock.Lock()
+		time.Sleep(5 * time.Second)
+		global.Logger.Debug("进程:", id, "模拟发送邮件-", j.Email, j.Title)
+		// lock.Unlock()
 		// results <- 1
 
 	}
@@ -72,7 +76,7 @@ func runTask() bool {
 	results := make(chan int, count)
 
 	// 开启3个线程
-	for w := 1; w <= 3; w++ {
+	for w := 1; w <= 5; w++ {
 		go SendMailWorker(w, jobs, results)
 	}
 
