@@ -13,18 +13,44 @@ import (
 // 然后进行线程提醒
 
 // var lock sync.Mutex                        // 互斥锁+
-var ReminderJobs = make(chan MailInfo, 60) // 工作管道的数量
+// var ReminderJobs = make(chan ReminderInfo, 1000) // 工作管道的数量
 
 type MailInfo struct {
 	Email   string `json:"email"`
 	Title   string `json:"title"`
 	Content string `json:"content"`
 }
-type EventReminder struct {
-	Ticker *time.Ticker
+
+type ReminderInfo struct {
+	Title       string
+	RenmindTime time.Time
+	MailInfo    MailInfo
 }
 
-func (e *EventReminder) Start() {
+// type MailWorker struct {
+// 	Id      int
+// 	Jobs    <-chan MailInfo
+// 	Results chan<- int
+// 	Wg      *sync.WaitGroup
+// }
+
+type EventReminder struct {
+	Ticker       *time.Ticker
+	ReminderJobs chan ReminderInfo
+	ChanNum      int
+	ThreadNum    int
+}
+
+// 定时提醒任务
+//  @param chanNum int 管道容量 推荐:1000
+//  @param ThreadNum int 线程数量 推荐:10
+//  @return *EventReminder
+func (e *EventReminder) Start(chanNum int, ThreadNum int) {
+	ReminderJobs := make(chan ReminderInfo, chanNum)
+	e.ChanNum = chanNum
+	e.ThreadNum = ThreadNum
+	e.ReminderJobs = ReminderJobs
+
 	go func() {
 		e.Ticker = time.NewTicker(60 * time.Second)
 		defer e.Ticker.Stop()
@@ -34,12 +60,21 @@ func (e *EventReminder) Start() {
 			case <-e.Ticker.C:
 				currentTime := time.Now()
 				global.Logger.Debug("#### 定时执行 ", currentTime.Format(cmn.TimeFormatMode1))
-				go runTask(currentTime)
-				global.Logger.Debug("#### 定时执行结束 ", currentTime.Format(cmn.TimeFormatMode1))
+				go e.runTask(currentTime)
+				// global.Logger.Debug("#### 定时执行结束 ", currentTime.Format(cmn.TimeFormatMode1))
 			}
 		}
 	}()
 
+	// 运行队列
+	go e.startThread(e.ThreadNum)
+}
+
+// 启动线程
+func (e *EventReminder) startThread(thread int) {
+	for w := 1; w <= thread; w++ {
+		go e.RunWorker(w)
+	}
 }
 
 // 停止定时器任务
@@ -48,93 +83,67 @@ func (e *EventReminder) Stop() {
 	e.Ticker = nil
 }
 
-// 工作池
-func SendMailWorker(id int, jobs <-chan MailInfo, results chan<- int) {
-	// i := 1
-	for j := range jobs {
-		// lock.Lock()
-		time.Sleep(5 * time.Second)
-		global.Logger.Debug("进程:", id, "模拟发送邮件-", j.Email, j.Title)
-		// lock.Unlock()
-		results <- 1
-		// i++
+// 开始工作
+func (e *EventReminder) RunWorker(workerId int) {
+	for v := range e.ReminderJobs {
+		global.Logger.Debug("任务开始", v.Title)
+		// 目前正在工作
+		// 站内消息
+		// 发送邮件
+
+		SendMailWorker(v.MailInfo, workerId, v)
+		// 删除该定时
+		// 生成下次定时
+		global.Logger.Debug("任务结束", v.Title)
 	}
 }
 
+// 邮件工作
+func SendMailWorker(newMail MailInfo, workerId int, reminderInfo ReminderInfo) {
+	time.Sleep(10 * time.Second)
+}
+
 // 运行任务
-func runTask(currentTime time.Time) bool {
-	// 查询数据库，
+func (e *EventReminder) runTask(currentTime time.Time) bool {
+
+	// 查询数据库
 	mEventReminder := models.EventReminder{}
 	eventReminderList, err := mEventReminder.GetListByReminderTime(currentTime.Format(cmn.TIME_MODE_REMINDER_TIME))
 	if err != nil {
 		return false
 	}
 
-	taskTitle := currentTime.Format(cmn.TimeFormatMode1)
-	// startTime := currentTime.Unix() // 记录开始时间
-	global.Logger.Debug("== 定时提醒任务执行开始", taskTitle)
-	defer global.Logger.Debug("== 关闭线程", taskTitle)
-
+	taskTitle := currentTime.Format("15:04:05") + " " + currentTime.Format("04") + " "
+	global.Logger.Debug("==== runTask开始:", taskTitle)
+	defer global.Logger.Debug("==== runTask完成:", taskTitle)
 	count := len(eventReminderList)
 	if count == 0 {
 		return false
 	}
-	// jobs := make(chan MailInfo, count) // 迁移到全局
-	results := make(chan int, count)
 
-	// 开启5个线程
-	global.Logger.Debug("准备执行线程 5个")
-	for w := 1; w <= 5; w++ {
-		go SendMailWorker(w, ReminderJobs, results)
-	}
-
-	go func() {
-		global.Logger.Debug("准备插入任务，任务数:", len(eventReminderList))
-		for i, v := range eventReminderList {
-			// 判断任务的方式，Method
-			if v.Method == 1 {
-				// fmt.Println("仅执行一次的任务")
-				// global.Logger.Debug("定时提醒任务执行", "任务id:", v.ID, "事件id:", v.EventId)
-				m := MailInfo{
-					Email: "任务id:" + strconv.Itoa(int(v.ID)),
-					Title: "事件id:" + strconv.Itoa(int(v.EventId)),
-					// Content: "内容是" + strconv.Itoa(i),
-				}
-
-				global.Logger.Debug("插入任务", taskTitle, "  ", count, " -- ", i)
-
-				// 发送邮件
-				ReminderJobs <- m
+	// 将数据内容插入队列
+	// global.Logger.Debug(taskTitle, "准备插入任务，任务数:", len(eventReminderList))
+	for i, v := range eventReminderList {
+		// 判断任务的方式，Method
+		if v.Method == 1 {
+			// fmt.Println("仅执行一次的任务")
+			m := MailInfo{
+				Email:   "任务id:" + strconv.Itoa(int(v.ID)),
+				Title:   "事件id:" + strconv.Itoa(int(v.EventId)),
+				Content: taskTitle,
 			}
-		}
-		global.Logger.Debug("结束插入任务")
-	}()
 
-	// 收集结果
-	global.Logger.Debug("#等待结果", taskTitle)
-	// for a := 0; a < count; a++ {
-	// 	global.Logger.Debug("循环等待结果", a)
-	// 	<-results
-	// 	if a == count-1 {
-	// 		global.Logger.Debug("== 定时提醒任务执行结束", taskTitle, " 用时:", time.Now().Unix()-startTime, "s")
+			reminderInfo := ReminderInfo{
+				Title:       taskTitle + strconv.Itoa(i+1),
+				RenmindTime: currentTime,
+				MailInfo:    m,
+			}
+			global.Logger.Debug("插入任务:", count, "/", i+1, " ", reminderInfo.Title)
 
-	// 	} else {
-	// 		global.Logger.Debug("执行结果", taskTitle, "  ", count, " -- ", a)
-	// 	}
-	// }
-	i := 1
-	for j := range results {
-		_ = j
-		global.Logger.Debug("循环等待结果", taskTitle, i)
-		if i == count {
-			global.Logger.Debug("#关闭results管道")
-			close(results)
-			break
+			// 插入任务到队列
+			e.ReminderJobs <- reminderInfo
 		}
-		i++
 	}
-	global.Logger.Debug("#结果接收完毕", taskTitle)
-	// close(results)
 
 	return true
 }

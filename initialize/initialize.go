@@ -180,7 +180,18 @@ func RunOther() {
 
 // db连接后执行
 func RunAfterDb() {
-	ability.EventReminder.Start() // 事件提醒定时器
+	// 定时任务
+	chanNum := global.Config.GetValueInt("reminder", "chan_num")
+	threadNum := global.Config.GetValueInt("reminder", "thread_num")
+	if chanNum == 0 {
+		chanNum = 1000
+		global.Config.SetValue("reminder", "chan_num", strconv.Itoa(chanNum))
+	}
+	if threadNum == 0 {
+		threadNum = 50
+		global.Config.SetValue("reminder", "thread_num", strconv.Itoa(threadNum))
+	}
+	ability.EventReminder.Start(chanNum, threadNum) // 事件提醒定时器
 }
 
 func InitLang(lang string) {

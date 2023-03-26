@@ -4,9 +4,11 @@ import (
 	"calendar-note-gin/initialize"
 	"calendar-note-gin/lib/cmn"
 	"calendar-note-gin/lib/global"
+	"calendar-note-gin/models"
 	"flag"
 	"fmt"
 	"os"
+	"time"
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
@@ -73,7 +75,7 @@ func main() {
 
 	global.Logger.Infoln("li-calendar success start!")
 	// 测试
-	// test()
+	test()
 
 	// 任务
 	initialize.RunAfterDb()
@@ -83,6 +85,28 @@ func main() {
 }
 
 func test() {
+	reminderTime := time.Now().Add(time.Minute)
+	e := models.EventReminder{}
+	e.ReminderTime = reminderTime.Format(cmn.TIME_MODE_REMINDER_TIME)
+	e.EventId = 2700
+	e.Method = 1
+	for i := 0; i < 100; i++ {
+		e.ID = 0
+		global.Db.Create(&e)
+	}
+
+	e.ReminderTime = reminderTime.Add(time.Minute).Format(cmn.TIME_MODE_REMINDER_TIME)
+	for i := 0; i < 5; i++ {
+		e.ID = 0
+		global.Db.Create(&e)
+	}
+
+	// e.ReminderTime = reminderTime.Add(time.Minute).Format(cmn.TIME_MODE_REMINDER_TIME)
+	// for i := 0; i < 3; i++ {
+	// 	e.ID = 0
+	// 	global.Db.Create(&e)
+	// }
+
 	// emailInfo := systemSetting.Email{}
 	// systemSetting.GetValueByInterface("system_email", &emailInfo)
 	// mailer := mail.NewMail(emailInfo.Mail, emailInfo.Password, emailInfo.Host, emailInfo.Port)
@@ -107,9 +131,6 @@ func getDefaultConfig() map[string]map[string]string {
 		},
 		"sqlite": {
 			"file_path": "./database.db",
-		},
-		"webdav": {
-			"upload_max_size": "100", // 上传最大限制（单位：m）
 		},
 	}
 
