@@ -12,6 +12,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
+	"gopkg.in/gomail.v2"
 )
 
 var RunMode = "debug"
@@ -75,7 +76,7 @@ func main() {
 
 	global.Logger.Infoln("li-calendar success start!")
 	// 测试
-	test()
+	// test()
 
 	// 任务
 	initialize.RunAfterDb()
@@ -150,4 +151,31 @@ func init() {
 		level = global.LoggerLevel
 	}
 	global.Logger = cmn.InitLogger(runtimePath+"/running.log", level)
+}
+
+func test2() {
+	// 创建一个新的电子邮件消息
+	m := gomail.NewMessage()
+
+	// 设置发件人
+	m.SetHeader("From", "demo_admin@enianteam.com")
+
+	// 设置收件人，可以设置多个收件人
+	m.SetHeader("To", "95302870@qq.com")
+
+	// 设置抄送，可以设置多个抄送人
+	// m.SetHeader("Cc", "cc1@example.com", "cc2@example.com")
+
+	// 设置密送，可以设置多个密送人
+	// m.SetHeader("Bcc", "bcc1@example.com", "bcc2@example.com")
+
+	// 设置主题和正文
+	m.SetHeader("Subject", "测试邮件")
+	m.SetBody("text/plain", "这是一封测试邮件。")
+
+	//连接到SMTP服务器并发送邮件
+	d := gomail.NewDialer("smtp.mxhichina.com", 465, "demo_admin@enianteam.com", "Sun95302870.") // 这里需要替换为实际的 SMTP 服务器地址、端口号、发件人邮箱和密码。
+	if err := d.DialAndSend(m); err != nil {
+		panic(err)
+	}
 }
