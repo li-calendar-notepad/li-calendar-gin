@@ -29,7 +29,10 @@ type ReminderInfo struct {
 	RemindTime time.Time // 提醒时间
 	StartTime  string    // 开始时间
 	EndTime    string    // 结束时间
-	UserInfo   models.User
+	// UserInfo      models.User
+	// EventInfo     models.Event
+	EventReminder models.EventReminder
+	Id            uint
 }
 
 // type MailWorker struct {
@@ -115,9 +118,7 @@ func SendMailWorker(workerId int, reminderInfo ReminderInfo) {
 		Port:     emailInfoConfig.Port,
 	}
 
-	eventReminder := mail.EventReminder{}
-	eventReminder = mail.EventReminder(reminderInfo)
-	mail.SendEventReminder(mail.NewEmailer(emailInfo), reminderInfo.UserInfo.Mail, eventReminder)
+	mail.SendEventReminder(mail.NewEmailer(emailInfo), reminderInfo.EventReminder.Event.Item.User.Mail, reminderInfo.EventReminder)
 	// time.Sleep(10 * time.Second)
 }
 
@@ -146,12 +147,12 @@ func (e *EventReminder) runTask(currentTime time.Time) bool {
 		if v.Method == 1 {
 			// fmt.Println("仅执行一次的任务")
 			reminderInfo := ReminderInfo{
-				ItemTitle:  v.Event.Item.Title,
-				Title:      v.Event.Title,
-				RemindTime: currentTime,
-				StartTime:  v.Event.StartTime.Time.Format(cmn.TimeFormatMode1),
-				EndTime:    v.Event.EndTime.Time.Format(cmn.TimeFormatMode1),
-				UserInfo:   v.Event.Item.User,
+				ItemTitle:     v.Event.Item.Title,
+				Title:         v.Event.Title,
+				RemindTime:    currentTime,
+				StartTime:     v.Event.StartTime.Time.Format(cmn.TimeFormatMode1),
+				EndTime:       v.Event.EndTime.Time.Format(cmn.TimeFormatMode1),
+				EventReminder: v,
 			}
 			// fmt.Println()
 			global.Logger.Debug("插入任务:", count, "/", i+1, " ", reminderInfo.Title)

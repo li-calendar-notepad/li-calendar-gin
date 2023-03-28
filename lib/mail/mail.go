@@ -1,20 +1,10 @@
 package mail
 
 import (
+	"calendar-note-gin/lib/cmn"
 	"calendar-note-gin/lib/global"
 	"calendar-note-gin/models"
-	"time"
 )
-
-type EventReminder struct {
-	ItemTitle string // 项目标题
-	Title     string // 事件标题
-	// Content    string // 事件内容 不支持内容
-	RemindTime time.Time // 提醒时间
-	StartTime  string    // 开始时间
-	EndTime    string    // 结束时间
-	UserInfo   models.User
-}
 
 // 发送注册验证码
 //
@@ -60,19 +50,21 @@ func SendResetPasswordVCode(emailer *Emailer, mailTo, vcode string) error {
 //	@param mailTo
 //	@param eventReminder
 //	@return error
-func SendEventReminder(emailer *Emailer, mailTo string, eventReminder EventReminder) error {
+func SendEventReminder(emailer *Emailer, mailTo string, eventReminder models.EventReminder) error {
+	startTime := eventReminder.Event.StartTime.Time.Format(cmn.TimeFormatMode4)
+	endTime := eventReminder.Event.EndTime.Time.Format(cmn.TimeFormatMode4)
 	title := global.Lang.GetWithFields("mail.reminder_title", map[string]string{
-		"Title": eventReminder.Title,
-		"Time":  eventReminder.StartTime,
+		"Title": eventReminder.Event.Title,
+		"Time":  startTime,
 	})
 	contentParam := map[string]string{
-		"ItemTitle": eventReminder.ItemTitle,
-		"Time":      eventReminder.StartTime,
+		"ItemTitle": eventReminder.Event.Item.Title,
+		"Time":      startTime,
 	}
 	content := "<p>" + global.Lang.GetWithFields("mail.reminder_content", contentParam) + "</p>"
-	content += "<p>" + global.Lang.Get("mail.reminder_event_title") + " : " + eventReminder.Title + "</p>"
-	content += "<p>" + global.Lang.Get("common.start_time") + " : " + eventReminder.StartTime + "</p>"
-	content += "<p>" + global.Lang.Get("common.end_time") + " : " + eventReminder.EndTime + "</p>"
+	content += "<p>" + global.Lang.Get("mail.reminder_event_title") + " : " + eventReminder.Event.Title + "</p>"
+	content += "<p>" + global.Lang.Get("common.start_time") + " : " + startTime + "</p>"
+	content += "<p>" + global.Lang.Get("common.end_time") + " : " + endTime + "</p>"
 
 	err := emailer.SendMail(mailTo, title, content)
 	if err != nil {
