@@ -3,8 +3,9 @@ package eventReminder
 import (
 	"calendar-note-gin/lib/cmn"
 	"calendar-note-gin/lib/global"
+	"calendar-note-gin/lib/mail"
+	"calendar-note-gin/lib/systemSetting"
 	"calendar-note-gin/models"
-	"strconv"
 	"time"
 )
 
@@ -22,9 +23,13 @@ type MailInfo struct {
 }
 
 type ReminderInfo struct {
-	Title       string
-	RenmindTime time.Time
-	MailInfo    MailInfo
+	ItemTitle string // 项目标题
+	Title     string // 事件标题
+	// Content    string // 事件内容 不支持内容
+	RemindTime time.Time // 提醒时间
+	StartTime  string    // 开始时间
+	EndTime    string    // 结束时间
+	UserInfo   models.User
 }
 
 // type MailWorker struct {
@@ -42,9 +47,10 @@ type EventReminder struct {
 }
 
 // 定时提醒任务
-//  @param chanNum int 管道容量 推荐:1000
-//  @param ThreadNum int 线程数量 推荐:10
-//  @return *EventReminder
+//
+//	@param chanNum int 管道容量 推荐:1000
+//	@param ThreadNum int 线程数量 推荐:10
+//	@return *EventReminder
 func (e *EventReminder) Start(chanNum int, ThreadNum int) {
 	ReminderJobs := make(chan ReminderInfo, chanNum)
 	e.ChanNum = chanNum
@@ -91,7 +97,7 @@ func (e *EventReminder) RunWorker(workerId int) {
 		// 站内消息
 		// 发送邮件
 
-		SendMailWorker(v.MailInfo, workerId, v)
+		SendMailWorker(workerId, v)
 		// 删除该定时
 		// 生成下次定时
 		global.Logger.Debug("任务结束", v.Title)
@@ -99,8 +105,20 @@ func (e *EventReminder) RunWorker(workerId int) {
 }
 
 // 邮件工作
-func SendMailWorker(newMail MailInfo, workerId int, reminderInfo ReminderInfo) {
-	time.Sleep(10 * time.Second)
+func SendMailWorker(workerId int, reminderInfo ReminderInfo) {
+	emailInfoConfig := systemSetting.Email{}
+	systemSetting.GetValueByInterface("system_email", &emailInfoConfig)
+	emailInfo := mail.EmailInfo{
+		Username: emailInfoConfig.Mail,
+		Password: emailInfoConfig.Password,
+		Host:     emailInfoConfig.Host,
+		Port:     emailInfoConfig.Port,
+	}
+
+	eventReminder := mail.EventReminder{}
+	eventReminder = mail.EventReminder(reminderInfo)
+	mail.SendEventReminder(mail.NewEmailer(emailInfo), reminderInfo.UserInfo.Mail, eventReminder)
+	// time.Sleep(10 * time.Second)
 }
 
 // 运行任务
@@ -127,17 +145,15 @@ func (e *EventReminder) runTask(currentTime time.Time) bool {
 		// 判断任务的方式，Method
 		if v.Method == 1 {
 			// fmt.Println("仅执行一次的任务")
-			m := MailInfo{
-				Email:   "任务id:" + strconv.Itoa(int(v.ID)),
-				Title:   "事件id:" + strconv.Itoa(int(v.EventId)),
-				Content: taskTitle,
-			}
-
 			reminderInfo := ReminderInfo{
-				Title:       taskTitle + strconv.Itoa(i+1),
-				RenmindTime: currentTime,
-				MailInfo:    m,
+				ItemTitle:  v.Event.Item.Title,
+				Title:      v.Event.Title,
+				RemindTime: currentTime,
+				StartTime:  v.Event.StartTime.Time.Format(cmn.TimeFormatMode1),
+				EndTime:    v.Event.EndTime.Time.Format(cmn.TimeFormatMode1),
+				UserInfo:   v.Event.Item.User,
 			}
+			// fmt.Println()
 			global.Logger.Debug("插入任务:", count, "/", i+1, " ", reminderInfo.Title)
 
 			// 插入任务到队列

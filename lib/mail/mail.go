@@ -2,15 +2,18 @@ package mail
 
 import (
 	"calendar-note-gin/lib/global"
+	"calendar-note-gin/models"
+	"time"
 )
 
 type EventReminder struct {
 	ItemTitle string // 项目标题
 	Title     string // 事件标题
 	// Content    string // 事件内容 不支持内容
-	RemindTime string // 提醒时间
-	StartTime  string // 开始时间
-	EndTime    string // 结束时间
+	RemindTime time.Time // 提醒时间
+	StartTime  string    // 开始时间
+	EndTime    string    // 结束时间
+	UserInfo   models.User
 }
 
 // 发送注册验证码

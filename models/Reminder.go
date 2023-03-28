@@ -62,7 +62,7 @@ func (m *EventReminder) Done() {
 
 // 根据事件获取某时间段的提醒任务列表
 func (m *EventReminder) GetListByReminderTime(reminderTime string) (eventReminderList []EventReminder, err error) {
-	err = Db.Model(&EventReminder{}).Find(&eventReminderList, "reminder_time=?", reminderTime).Error
+	err = Db.Preload("Event").Preload("Event.Item").Preload("Event.Item.User").Find(&eventReminderList, "reminder_time=?", reminderTime).Error
 	return
 }
 
