@@ -4,6 +4,8 @@ import (
 	"calendar-note-gin/initialize"
 	"calendar-note-gin/lib/cmn"
 	"calendar-note-gin/lib/global"
+	"calendar-note-gin/lib/mail"
+	"calendar-note-gin/lib/systemSetting"
 	"calendar-note-gin/models"
 	"flag"
 	"fmt"
@@ -86,6 +88,26 @@ func main() {
 }
 
 func test() {
+
+	emailInfoConfig := systemSetting.Email{}
+	systemSetting.GetValueByInterface("system_email", &emailInfoConfig)
+	emailInfo := mail.EmailInfo{
+		Username: emailInfoConfig.Mail,
+		Password: emailInfoConfig.Password,
+		Host:     emailInfoConfig.Host,
+		Port:     emailInfoConfig.Port,
+	}
+	eventReminder := mail.EventReminder{
+		ItemTitle: "神奇的项目",
+		Title:     "吃饭睡觉打豆豆",
+		StartTime: "2023-3-28 11:06:23",
+	}
+	emailer := mail.NewEmailer(emailInfo)
+	// err := mail.SendResetPasswordVCode(emailer, "95302870@qq.com", "123456")
+	// fmt.Println("sss", err)
+	err := mail.SendEventReminder(emailer, "95302870@qq.com", eventReminder)
+	fmt.Println(err)
+	os.Exit(1)
 	reminderTime := time.Now().Add(time.Minute)
 	e := models.EventReminder{}
 	e.ReminderTime = reminderTime.Format(cmn.TIME_MODE_REMINDER_TIME)
