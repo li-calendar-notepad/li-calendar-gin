@@ -102,6 +102,7 @@ func (e *EventReminder) RunWorker(workerId int) {
 
 		SendMailWorker(workerId, v)
 		// 删除该定时
+		// v.EventReminder.Del()
 		// 生成下次定时
 		global.Logger.Debug("任务结束", v.Title)
 	}
@@ -159,6 +160,7 @@ func (e *EventReminder) runTask(currentTime time.Time) bool {
 
 			// 插入任务到队列
 			e.ReminderJobs <- reminderInfo
+			v.Del()
 		}
 	}
 

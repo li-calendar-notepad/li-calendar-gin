@@ -95,9 +95,11 @@ func (a *EventApi) UpdateByEventId(c *gin.Context) {
 			found.Del()
 		}
 	} else {
-		reminderTimeStr := reminderTime.Add(-time.Duration(eventInfo.ReminderBefore) * time.Minute).Format(cmn.TIME_MODE_REMINDER_TIME)
+		reminderTime := reminderTime.Add(-time.Duration(eventInfo.ReminderBefore) * time.Minute)
+		currentTime := time.Now()
+		reminderTimeStr := reminderTime.Format(cmn.TIME_MODE_REMINDER_TIME)
 		// 查询之前是否存在
-		if foundErr == gorm.ErrRecordNotFound {
+		if foundErr == gorm.ErrRecordNotFound && reminderTime.Unix() > currentTime.Unix() {
 			global.Logger.Debug("添加新定时任务")
 			newEventReminder := models.EventReminder{
 				EventId:      eventInfo.ID,
@@ -106,10 +108,17 @@ func (a *EventApi) UpdateByEventId(c *gin.Context) {
 			}
 			newEventReminder.Add()
 		} else {
-			global.Logger.Debug("更新定时任务")
-			found.ReminderTime = reminderTimeStr
-			found.UpdateByEventId(eventInfo.ID)
+			if reminderTime.Unix() > currentTime.Unix() {
+				global.Logger.Debug("更新定时任务")
+				found.ReminderTime = reminderTimeStr
+				found.UpdateByEventId(eventInfo.ID)
+			} else if foundErr == nil {
+				global.Logger.Debug("删除过去的任务")
+				found.Del()
+			}
+
 		}
+
 	}
 
 	if err != nil {
@@ -301,13 +310,20 @@ func (a *EventApi) CreateOne(c *gin.Context) {
 			apiReturn.Error(c, global.Lang.GetAndInsert("common.api_error_param_format", "[", err.Error(), "]"))
 			return
 		}
-		reminderTimeStr := reminderTime.Add(-time.Duration(param.ReminderBefore) * time.Minute).Format(cmn.TIME_MODE_REMINDER_TIME)
-		newEventReminder := models.EventReminder{
-			EventId:      res.ID,
-			ReminderTime: reminderTimeStr,
-			Method:       1,
+		reminderTime = reminderTime.Add(-time.Duration(param.ReminderBefore) * time.Minute)
+		currentTime := time.Now()
+		// 提醒时间大于当前时间创建提醒
+		if reminderTime.Unix() > currentTime.Unix() {
+			global.Logger.Debug("添加新定时任务")
+			reminderTimeStr := reminderTime.Format(cmn.TIME_MODE_REMINDER_TIME)
+			newEventReminder := models.EventReminder{
+				EventId:      res.ID,
+				ReminderTime: reminderTimeStr,
+				Method:       1,
+			}
+			newEventReminder.Add()
 		}
-		newEventReminder.Add()
+
 	}
 
 	if err != nil {
