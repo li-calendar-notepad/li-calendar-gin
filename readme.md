@@ -37,7 +37,7 @@ Li Calendar - 锂日历记事本
 - [x] 风格支持自定义，支持导入导出
 - [x] 节假日改为特殊日期，可导入。后期可根据用户提供支持其他地区或国家假期
 - [x] docker运行
-- [x] 设置邮件提醒
+- [x] 设置邮件提醒 (**请注意:docker运行需要证书**)
 - [ ] 按时间范围，分享日历视图
 - [ ] 速记功能
 - [ ] 事件时间线视图
@@ -161,4 +161,4 @@ licalendar:latest
 
 - 红烧猎人 \[ [Github](https://github.com/hslr-s) | [Gitee](https://gitee.com/GgoCoder) ]
 
-- GgoCoder \[ [Gitee](https://gitee.com/GgoCoder) ]
+- GgoCoder \[ [Github](https://github.com/forgocode) | [Gitee](https://gitee.com/GgoCoder) ]
