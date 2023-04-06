@@ -108,7 +108,7 @@ Li Calendar - 锂日历记事本
 # 生成配置文件（必须）
 ./li-calendar config
 
-# 执行完成之后同级目录会生成两个配置文件，根据自己的需求修改`config.ini`文件内容
+# 执行完成之后同级目录会生成`conf`目录，里面有两个配置文件，根据自己的需求修改`config.ini`文件内容
 ```
 
 #### 运行：
@@ -154,3 +154,11 @@ licalendar:latest
 ## 🎁 打赏
 
 开源不易，如果你喜欢本项目或者觉得项目对你有帮助，欢迎进行[🧧打赏作者🧧](https://blog.enianteam.com/u/sun/content/11#%E6%89%93%E8%B5%8F)。记得加作者留名。在此感谢
+
+## 😎 代码贡献
+
+感谢各位爱好者对本项目作出的贡献（按加入时间排序）：
+
+- 红烧猎人 \[ [Github](https://github.com/hslr-s) | [Gitee](https://gitee.com/GgoCoder) ]
+
+- GgoCoder \[ [Gitee](https://gitee.com/GgoCoder) ]
