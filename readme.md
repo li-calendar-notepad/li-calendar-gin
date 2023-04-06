@@ -70,7 +70,7 @@ Li Calendar - 锂日历记事本
 
 #### 方式一 （通用）
 
-1. 前端文件编译后，将dist下文件全部移植`./assets/frontend`文件夹下。编译教程请参考[前端项目](#前端代码)的`readme.md`文件
+1. 前端文件编译后，将dist下文件全部移植`./assets/frontend`文件夹下。编译教程请参考[前端项目](#前端源码)的`readme.md`文件
 
 2. 按照[此教程](./assets/readme.md)安装工具。然后将
     `assets`文件夹编译成go文件（目的是把静态资源打包在可执行文件内）
