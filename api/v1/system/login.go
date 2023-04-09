@@ -140,7 +140,15 @@ func (l *LoginApi) SendResetPasswordVCode(c *gin.Context) {
 		apiReturn.Error(c, "账号不存在")
 		return
 	}
-	if err := mail.SendResetPasswordVCode(param.Email, emailVCode); err != nil {
+	emailInfoConfig := systemSetting.Email{}
+	systemSetting.GetValueByInterface("system_email", &emailInfoConfig)
+	emailInfo := mail.EmailInfo{
+		Username: emailInfoConfig.Mail,
+		Password: emailInfoConfig.Password,
+		Host:     emailInfoConfig.Host,
+		Port:     emailInfoConfig.Port,
+	}
+	if err := mail.SendResetPasswordVCode(mail.NewEmailer(emailInfo), param.Email, emailVCode); err != nil {
 		apiReturn.Error(c, err.Error())
 		return
 	}

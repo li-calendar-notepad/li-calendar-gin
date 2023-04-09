@@ -33,6 +33,6 @@ WORKDIR /app
 
 COPY --from=server_image /build/li-calendar /app/li-calendar
 
-RUN ./li-calendar config
+RUN apt-get update && apt-get install -y ca-certificates &&./li-calendar config
 
 CMD ./li-calendar 

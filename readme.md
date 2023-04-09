@@ -15,7 +15,19 @@ Li Calendar - 锂日历记事本
 
 ## 🛸 介绍
 
-前身[日历记事本PHP版本](https://gitee.com/hslr/calendar_notepad)，因为工作中常常要记录每天的工作日志，所以2020年上半年，抽了几天的下班时间开发了PHP版本，稳定运行了一年，但是它有些不足，2021年决定重新启动此项目，对他进行优化和增加功能并进行了技术升级。后期接触了GO+Gin+Vue3+ElementUI-Plus并重新开发了本项目 锂日历记事本。
+前身[日历记事本PHP版本](https://gitee.com/hslr/calendar_notepad)，因为工作中常常要记录每天的工作日志，所以2020年上半年，抽了几天的下班时间开发了PHP版本，稳定运行了一年，但是它有些不足，2021年决定重新启动此项目，对他进行优化和增加功能并进行了技术升级。后期接触了GO+Gin+Vue3并再次重新开发了本项目 锂日历记事本。
+
+## 🎁 软件架构
+
+|名称|说明|
+|---|---|
+|Go|程序的后端语言|
+|Gin|后端框架|
+|Gorm|ORM数据库框架|
+|vue3|前端框架|
+|ElementUI-Plus|前端ui框架|
+|fullcalendar|日历视图框架|
+
 
 ## 🌱 相对PHP版本增加以及准备做的
 - [x] 全新UI
@@ -25,11 +37,13 @@ Li Calendar - 锂日历记事本
 - [x] 风格支持自定义，支持导入导出
 - [x] 节假日改为特殊日期，可导入。后期可根据用户提供支持其他地区或国家假期
 - [x] docker运行
+- [x] 设置邮件提醒 (**请注意:docker运行需要证书**)
 - [ ] 按时间范围，分享日历视图
-- [ ] 设置待办邮件提醒
 - [ ] 速记功能
 - [ ] 事件时间线视图
 - [ ] 单事件收藏、分享
+- [ ] 项目的收藏功能
+- [ ] 时间线视图
 
 
 ## ⌨️ 前端源码
@@ -56,7 +70,7 @@ Li Calendar - 锂日历记事本
 
 #### 方式一 （通用）
 
-1. 前端文件编译后，将dist下文件全部移植`./assets/frontend`文件夹下。编译教程请参考[前端项目](#前端代码地址)的`readme.md`文件
+1. 前端文件编译后，将dist下文件全部移植`./assets/frontend`文件夹下。编译教程请参考[前端项目](#前端源码)的`readme.md`文件
 
 2. 按照[此教程](./assets/readme.md)安装工具。然后将
     `assets`文件夹编译成go文件（目的是把静态资源打包在可执行文件内）
@@ -94,7 +108,7 @@ Li Calendar - 锂日历记事本
 # 生成配置文件（必须）
 ./li-calendar config
 
-# 执行完成之后同级目录会生成两个配置文件，根据自己的需求修改`config.ini`文件内容
+# 执行完成之后同级目录会生成`conf`目录，里面有两个配置文件，根据自己的需求修改`config.ini`文件内容
 ```
 
 #### 运行：
@@ -140,3 +154,11 @@ licalendar:latest
 ## 🎁 打赏
 
 开源不易，如果你喜欢本项目或者觉得项目对你有帮助，欢迎进行[🧧打赏作者🧧](https://blog.enianteam.com/u/sun/content/11#%E6%89%93%E8%B5%8F)。记得加作者留名。在此感谢
+
+## 😎 代码贡献
+
+感谢各位爱好者对本项目作出的贡献（按加入时间排序）：
+
+- 红烧猎人 \[ [Github](https://github.com/hslr-s) | [Gitee](https://gitee.com/GgoCoder) ]
+
+- GgoCoder \[ [Github](https://github.com/forgocode) | [Gitee](https://gitee.com/GgoCoder) ]

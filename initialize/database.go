@@ -129,6 +129,7 @@ func CreateDatabase(db *gorm.DB) error {
 		&models.File{},
 		&models.SpecialDay{},
 		&models.Special{},
+		&models.EventReminder{},
 	)
 	return err
 }

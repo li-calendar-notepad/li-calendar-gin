@@ -17,11 +17,12 @@ import (
 const (
 	// 时间格式
 
-	TimeFormatMode1 = "2006-01-02 15:04:05" // 标准格式
-	TimeFormatMode4 = "2006-01-02 15:04"    // 标准格式 无秒
-	TimeFormatMode2 = "Mon Jan 2 15:04:05 -0700 MST 2006"
-	TimeFormatMode3 = "Mon, 2 Jan 2006 15:04:05 -0700 MST" // webdav格式
-	TimeYYYY_mm_dd  = "2006-01-02"
+	TimeFormatMode1         = "2006-01-02 15:04:05" // 标准格式
+	TimeFormatMode4         = "2006-01-02 15:04"    // 标准格式 无秒
+	TimeFormatMode2         = "Mon Jan 2 15:04:05 -0700 MST 2006"
+	TimeFormatMode3         = "Mon, 2 Jan 2006 15:04:05 -0700 MST" // webdav格式
+	TimeYYYY_mm_dd          = "2006-01-02"
+	TIME_MODE_REMINDER_TIME = "200601021504" // 提醒定时器的执行时间格式
 
 	// 随机码字典
 
