@@ -75,6 +75,7 @@ func Routers() *gin.Engine {
 	admin.InitSystemSettingRouter(adminGroup)
 	admin.InitSpecialRouter(adminGroup)
 	admin.InitStyleRouter(adminGroup)
+	admin.InitAbout(adminGroup)
 
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	return router
