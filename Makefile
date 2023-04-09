@@ -20,7 +20,7 @@ build: build-web build-server
 .PHONY:
 build-web: 
 	@echo "正在构建web..."
-	docker run --rm -it \
+	docker run --rm \
 		-v ${PWD}/web/:/app \
 		node \
 		/bin/sh -c "cd /app && npm install && npm run build"
@@ -28,7 +28,7 @@ build-web:
 .PHONY:
 build-server: build-server-image
 	@echo "正在构建server..."
-	docker run --rm -it -e app_name=${APP_NAME} -v ${PWD}:/root/build ${IMAGE_NAME}
+	docker run --rm -e app_name=${APP_NAME} -v ${PWD}:/root/build ${IMAGE_NAME}
 	tar -czvf ${APP_NAME}_${VERSION}.tar.gz  ${APP_NAME}
 
 .PHONY:

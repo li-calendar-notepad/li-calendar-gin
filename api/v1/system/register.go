@@ -72,7 +72,15 @@ func (l LoginApi) Register(c *gin.Context) {
 		global.VerifyCodeCachePool.Flush()
 	}
 	global.VerifyCodeCachePool.Set(info.Email, emailCode, 0)
-	err = mail.SendRegisterEmail(info.Email, emailCode)
+	emailInfoConfig := systemSetting.Email{}
+	systemSetting.GetValueByInterface("system_email", &emailInfoConfig)
+	emailInfo := mail.EmailInfo{
+		Username: emailInfoConfig.Mail,
+		Password: emailInfoConfig.Password,
+		Host:     emailInfoConfig.Host,
+		Port:     emailInfoConfig.Port,
+	}
+	err = mail.SendRegisterEmail(mail.NewEmailer(emailInfo), info.Email, emailCode)
 	if err != nil {
 		apiReturn.Error(c, global.Lang.Get("mail.send_mail_fail"))
 		global.Logger.Errorf("[register] fail to send email to%s", info.UserName)

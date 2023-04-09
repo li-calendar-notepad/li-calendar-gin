@@ -396,15 +396,21 @@ func (a *ItemApi) ForgotVisitPassword(c *gin.Context) {
 	visitPassword = itemInfo.Password
 	itemName = itemInfo.Title
 
-	emailInfo := systemSetting.Email{}
-	systemSetting.GetValueByInterface("system_email", &emailInfo)
-	mailer := mail.NewMail(emailInfo.Mail, emailInfo.Password, emailInfo.Host, emailInfo.Port)
+	emailInfoConfig := systemSetting.Email{}
+	systemSetting.GetValueByInterface("system_email", &emailInfoConfig)
+	emailInfo := mail.EmailInfo{
+		Username: emailInfoConfig.Mail,
+		Password: emailInfoConfig.Password,
+		Host:     emailInfoConfig.Host,
+		Port:     emailInfoConfig.Port,
+	}
+	emailer := mail.NewEmailer(emailInfo)
 	title := global.Lang.Get("mail.item_retrieval_password_title")
 	content := global.Lang.GetWithFields("mail.item_retrieval_password_content", map[string]string{
 		"ItemName": itemName,
 	})
-	if err = mailer.SendMailOfVCode(userInfo.Mail, title, content, visitPassword); err != nil {
-		global.Logger.Errorf("[item retrieval password] failed to send email to %s by , err:%+v\n", userInfo.Mail, err)
+	if err = emailer.SendMailOfVCode(userInfo.Mail, title, content, visitPassword); err != nil {
+		global.Logger.Errorf("[item retrieval password] failed to send email to %s , err:%+v\n", userInfo.Mail, err)
 		apiReturn.Error(c, global.Lang.Get("common.contact_admin"))
 		return
 	}

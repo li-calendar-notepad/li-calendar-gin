@@ -9,14 +9,13 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 var RunMode = "debug"
 var IsDocker = "" // 是否为docker模式
 
 func main() {
-	initialize.RUNCODE = RunMode
-	initialize.ISDOCER = IsDocker
 
 	foostr := flag.NewFlagSet("config", flag.ExitOnError)
 	_ = foostr
@@ -75,25 +74,10 @@ func main() {
 	// test()
 
 	// 任务
+	initialize.RunAfterDb()
 
 	// 初始化路由
 	initialize.Router()
-}
-
-func test() {
-	// emailInfo := systemSetting.Email{}
-	// systemSetting.GetValueByInterface("system_email", &emailInfo)
-	// mailer := mail.NewMail(emailInfo.Mail, emailInfo.Password, emailInfo.Host, emailInfo.Port)
-	// appName := global.Lang.Get("common.app_name")
-	// title := global.Lang.GetWithFields("mail.register_vcode_title", map[string]string{
-	// 	"AppName": appName,
-	// })
-	// content := global.Lang.GetWithFields("mail.register_vcode_content", map[string]string{
-	// 	"AppName": appName,
-	// 	"Minute":  "60",
-	// })
-	// err := mailer.SendMailOfVCode("95302870@qq.com", title, content, "123456")
-	// fmt.Println("邮件发送错误", err)
 }
 
 func getDefaultConfig() map[string]map[string]string {
@@ -106,18 +90,25 @@ func getDefaultConfig() map[string]map[string]string {
 		"sqlite": {
 			"file_path": "./database.db",
 		},
-		"webdav": {
-			"upload_max_size": "100", // 上传最大限制（单位：m）
-		},
 	}
 
 }
 
 func init() {
+	// 设置运行模式
 	gin.SetMode(RunMode) // GIN 运行模式
+	initialize.RUNCODE = RunMode
+	initialize.ISDOCER = IsDocker
+
 	runtimePath := "./runtime/runlog"
 	if err := os.MkdirAll(runtimePath, 0777); err != nil {
 		panic(err)
 	}
-	global.Logger = cmn.InitLogger(runtimePath+"/running.log", global.LoggerLevel)
+	var level zap.AtomicLevel
+	if initialize.RUNCODE == "debug" {
+		level = zap.NewAtomicLevelAt(zap.DebugLevel)
+	} else {
+		level = global.LoggerLevel
+	}
+	global.Logger = cmn.InitLogger(runtimePath+"/running.log", level)
 }
