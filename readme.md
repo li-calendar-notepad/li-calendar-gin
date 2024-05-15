@@ -133,18 +133,21 @@ docker run --name li-calendar -p 9090:9090 \
 -v ~/licalendar/conf:/app/conf \
 -v ~/licalendar/uploads:/app/uploads \
 -v ~/licalendar/database:/app/database \
-licalendar:latest
+hslr/li-calendar:latest
 ```
 
-更多数据卷说明
+更多参数说明
 ```
+# 环境变量
+-e TZ=Asia/Shanghai # 设置中国上海时区（避免错过邮件提醒）
+
+# 数据挂载（根据需求选择）
 -v ~/licalendar/conf:/app/conf # 项目配置目录
 -v ~/licalendar/uploads:/app/uploads # 上传的文件目录
 -v ~/licalendar/runtime:/app/runtime # 运行缓存、日志等
 -v ~/licalendar/lang:/app/lang # 语言文件目录
 -v ~/licalendar/database:/app/database # sqlite数据库目录
 ```
-
 
 
 ## 🧂 访问、默认账号密码：

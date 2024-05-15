@@ -1,14 +1,17 @@
 version: "3.2"
 
 services:
-  sun-panel:
-    image: 'licalendar:latest'
-    container_name: licalendar
+  LiCalendar:
+    image: 'hslr/li-calendar:latest'
+    container_name: LiCalendar
     volumes:
       - ./conf:/app/conf
       - ./uploads:/app/uploads
       - ./database:/app/database
-      # - ./runtime:/app/runtime
+
+    # environment:
+    #   - TZ=Asia/Shanghai # 设置中国上海时区
+    
     ports:
       - 9090:9090
     restart: always
