@@ -1,0 +1,14 @@
+version: "3.2"
+
+services:
+  sun-panel:
+    image: 'licalendar:latest'
+    container_name: licalendar
+    volumes:
+      - ./conf:/app/conf
+      - ./uploads:/app/uploads
+      - ./database:/app/database
+      # - ./runtime:/app/runtime
+    ports:
+      - 9090:9090
+    restart: always

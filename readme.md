@@ -117,8 +117,7 @@ Li Calendar - 锂日历记事本
 ./li-calendar 
 ```
 
-#### 访问：
-浏览器打开：http://[你的域名或ip]:9090
+
 
 
 ## 💎 Docker 运行
@@ -133,8 +132,7 @@ docker build -t licalendar:latest .
 docker run --name li-calendar -p 9090:9090 \
 -v ~/licalendar/conf:/app/conf \
 -v ~/licalendar/uploads:/app/uploads \
--v ~/licalendar/runtime:/app/runtime \
--v ~/licalendar/lang:/app/lang \
+-v ~/licalendar/database:/app/database \
 licalendar:latest
 ```
 
@@ -146,6 +144,24 @@ licalendar:latest
 -v ~/licalendar/lang:/app/lang # 语言文件目录
 -v ~/licalendar/database:/app/database # sqlite数据库目录
 ```
+
+
+
+## 🧂 访问、默认账号密码：
+
+### 浏览器打开
+
+```
+http://[你的域名或ip]:9090
+```
+
+### 默认账号密码
+
+```
+账号：admin2024  // 年份是根据当时部署的年份创建的
+密码：123456
+```
+
 
 ## ⛺ (假日、风格)导入文件
 特殊日期和风格文件下载（特殊日期包含中国法定节假日2020-2023年文件，欢迎提供其他地区或者国家假期数据）
