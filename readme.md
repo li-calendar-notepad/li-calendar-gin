@@ -159,9 +159,8 @@ hslr/li-calendar:latest
 # 数据挂载（根据需求选择）
 -v ~/docker_data/li-calendar/conf:/app/conf # 项目配置目录
 -v ~/docker_data/li-calendar/uploads:/app/uploads # 上传的文件目录
--v ~/docker_data/li-calendar/runtime:/app/runtime # 运行缓存、日志等
--v ~/docker_data/li-calendar/lang:/app/lang # 语言文件目录
--v ~/docker_data/li-calendar/database:/app/database # sqlite数据库目录
+-v ~/docker_data/li-calendar/database:/app/database # sqlite数据库目录（如果使用MySQL无需挂载此项）
+-v ~/docker_data/li-calendar/runtime:/app/runtime # 运行缓存、日志等(不推荐挂载)
 ```
 
 
