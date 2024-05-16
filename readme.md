@@ -115,6 +115,8 @@ Li Calendar - 锂日历记事本
 
 ## 🚄 运行
 
+首先下载好对应系统的可运行文件，如果没有你所使用系统的文件，请自行编译或者使用docker ，下载地址：[gitee](https://gitee.com/li-calendar-notepad/li-calendar-gin/releases) | [github](https://github.com/li-calendar-notepad/li-calendar-gin/releases)，Windows系统请使用 cmd 等工具来运行，避免闪退无法看见错误信息
+
 #### 生成配置文件：
 ```
 # 生成配置文件（必须）
@@ -124,8 +126,6 @@ Li Calendar - 锂日历记事本
 ```
 
 #### 可执行文件运行：
-
-首先下载好对应系统的可运行文件，如果没有你所使用系统的文件，请自行编译或者使用docker ，下载地址：[gitee](https://gitee.com/li-calendar-notepad/li-calendar-gin/releases) | [github](https://github.com/li-calendar-notepad/li-calendar-gin/releases)
 
 ```
 # linux
