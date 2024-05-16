@@ -152,7 +152,7 @@ docker pull hslr/li-calendar:latest
 mkdir -p ~/docker_data/li-calendar/{conf,uploads,database}
 
 # 运行
-docker run --name li-calendar -p 9090:9090 \
+docker run --name li-calendar --restart always -p 9090:9090 \
 -v ~/docker_data/li-calendar/conf:/app/conf \
 -v ~/docker_data/li-calendar/uploads:/app/uploads \
 -v ~/docker_data/li-calendar/database:/app/database \
@@ -164,6 +164,9 @@ hslr/li-calendar:latest
 ```sh
 # 开放端口
 -p 9090:9090
+
+# 设置容器自启动
+--restart always
 
 # 环境变量
 -e TZ=Asia/Shanghai # 设置中国上海时区（避免错过邮件提醒）
