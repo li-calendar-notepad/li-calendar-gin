@@ -132,8 +132,6 @@ Li Calendar - 锂日历记事本
 
 如果使用 docker-compose 请[点此查看 docker-compose.yml](./docker-compose.yml)
 
-**请将前端项目拉取到当前目录，并将前端项目命名为`web`，否则无法编译成功**
-
 ```shell
 # 拉取镜像
 docker pull hslr/li-calendar:latest
@@ -146,11 +144,15 @@ docker run --name li-calendar -p 9090:9090 \
 -v ~/docker_data/li-calendar/conf:/app/conf \
 -v ~/docker_data/li-calendar/uploads:/app/uploads \
 -v ~/docker_data/li-calendar/database:/app/database \
+-e TZ=Asia/Shanghai \
 hslr/li-calendar:latest
 ```
 
-更多参数说明
+参数说明
 ```sh
+# 开放端口
+-p 9090:9090
+
 # 环境变量
 -e TZ=Asia/Shanghai # 设置中国上海时区（避免错过邮件提醒）
 
