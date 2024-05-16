@@ -111,42 +111,55 @@ Li Calendar - 锂日历记事本
 # 执行完成之后同级目录会生成`conf`目录，里面有两个配置文件，根据自己的需求修改`config.ini`文件内容
 ```
 
-#### 运行：
+#### 可执行文件运行：
+
+首先下载好对应系统的可运行文件，如果没有你所使用系统的文件，请自行编译或者使用docker ，下载地址：[gitee](https://gitee.com/li-calendar-notepad/li-calendar-gin/releases) | [github](https://github.com/li-calendar-notepad/li-calendar-gin/releases)
+
 ```
-# 运行
+# linux
 ./li-calendar 
+
+# windows (避免出错请使用 cmd 运行)
+.\li-calendar.exe
 ```
 
 
 
 
-## 💎 Docker 运行
+## 💎 docker 和 docker-compose 运行
+
+[docker 仓库](https://hub.docker.com/r/hslr/li-calendar)
+
+如果使用 docker-compose 请[点此查看 docker-compose.yml](./docker-compose.yml)
 
 **请将前端项目拉取到当前目录，并将前端项目命名为`web`，否则无法编译成功**
 
 ```shell
-# 编译镜像
-docker build -t licalendar:latest . 
+# 拉取镜像
+docker pull hslr/li-calendar:latest
+
+# 创建挂载文件夹
+mkdir -p ~/docker_data/li-calendar/{conf,uploads,database}
 
 # 运行
 docker run --name li-calendar -p 9090:9090 \
--v ~/licalendar/conf:/app/conf \
--v ~/licalendar/uploads:/app/uploads \
--v ~/licalendar/database:/app/database \
+-v ~/docker_data/li-calendar/conf:/app/conf \
+-v ~/docker_data/li-calendar/uploads:/app/uploads \
+-v ~/docker_data/li-calendar/database:/app/database \
 hslr/li-calendar:latest
 ```
 
 更多参数说明
-```
+```sh
 # 环境变量
 -e TZ=Asia/Shanghai # 设置中国上海时区（避免错过邮件提醒）
 
 # 数据挂载（根据需求选择）
--v ~/licalendar/conf:/app/conf # 项目配置目录
--v ~/licalendar/uploads:/app/uploads # 上传的文件目录
--v ~/licalendar/runtime:/app/runtime # 运行缓存、日志等
--v ~/licalendar/lang:/app/lang # 语言文件目录
--v ~/licalendar/database:/app/database # sqlite数据库目录
+-v ~/docker_data/li-calendar/conf:/app/conf # 项目配置目录
+-v ~/docker_data/li-calendar/uploads:/app/uploads # 上传的文件目录
+-v ~/docker_data/li-calendar/runtime:/app/runtime # 运行缓存、日志等
+-v ~/docker_data/li-calendar/lang:/app/lang # 语言文件目录
+-v ~/docker_data/li-calendar/database:/app/database # sqlite数据库目录
 ```
 
 
