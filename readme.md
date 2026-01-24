@@ -17,6 +17,18 @@ Li Calendar - 锂日历记事本
 
 前身[日历记事本PHP版本](https://gitee.com/hslr/calendar_notepad)，因为工作中常常要记录每天的工作日志，所以2020年上半年，抽了几天的下班时间开发了PHP版本，稳定运行了一年，但是它有些不足，2021年决定重新启动此项目，对他进行优化和增加功能并进行了技术升级。后期接触了GO+Gin+Vue3并再次重新开发了本项目 锂日历记事本。
 
+## 😎 特点
+
+- 免部署、跨平台，并支持docker部署
+- 以日历的形式记录各种事项
+- 支持 markdown 语法
+- 事件以邮件的形式提醒
+- 支持限制指定企业邮箱格式注册
+- 支持节假日及特殊的日期特殊显示
+- 多彩事件风格
+- 支持事件统计
+- 每个日历记事本都可以单独设置密码
+
 ## 🎁 软件架构
 
 |名称|说明|
@@ -103,6 +115,8 @@ Li Calendar - 锂日历记事本
 
 ## 🚄 运行
 
+首先下载好对应系统的可运行文件，如果没有你所使用系统的文件，请自行编译或者使用docker ，下载地址：[gitee](https://gitee.com/li-calendar-notepad/li-calendar-gin/releases) | [github](https://github.com/li-calendar-notepad/li-calendar-gin/releases)，Windows系统请使用 cmd 等工具来运行，避免闪退无法看见错误信息
+
 #### 生成配置文件：
 ```
 # 生成配置文件（必须）
@@ -111,45 +125,79 @@ Li Calendar - 锂日历记事本
 # 执行完成之后同级目录会生成`conf`目录，里面有两个配置文件，根据自己的需求修改`config.ini`文件内容
 ```
 
-#### 运行：
+#### 可执行文件运行：
+
 ```
-# 运行
+# linux
 ./li-calendar 
+
+# windows (避免出错请使用 cmd 运行)
+.\li-calendar.exe
 ```
 
-#### 访问：
-浏览器打开：http://[你的域名或ip]:9090
 
 
-## 💎 Docker 运行
 
-**请将前端项目拉取到当前目录，并将前端项目命名为`web`，否则无法编译成功**
+## 💎 docker 和 docker-compose 运行
+
+[docker 仓库](https://hub.docker.com/r/hslr/li-calendar)
+
+如果使用 docker-compose 请[点此查看 docker-compose.yml](./docker-compose.yml)
 
 ```shell
-# 编译镜像
-docker build -t licalendar:latest . 
+# 拉取镜像
+docker pull hslr/li-calendar:latest
+
+# 创建挂载文件夹
+mkdir -p ~/docker_data/li-calendar/{conf,uploads,database}
 
 # 运行
-docker run --name li-calendar -p 9090:9090 \
--v ~/licalendar/conf:/app/conf \
--v ~/licalendar/uploads:/app/uploads \
--v ~/licalendar/runtime:/app/runtime \
--v ~/licalendar/lang:/app/lang \
-licalendar:latest
+docker run --name li-calendar --restart always -p 9090:9090 \
+-v ~/docker_data/li-calendar/conf:/app/conf \
+-v ~/docker_data/li-calendar/uploads:/app/uploads \
+-v ~/docker_data/li-calendar/database:/app/database \
+-e TZ=Asia/Shanghai \
+hslr/li-calendar:latest
 ```
 
-更多数据卷说明
+参数说明
+```sh
+# 开放端口
+-p 9090:9090
+
+# 设置容器自启动
+--restart always
+
+# 环境变量
+-e TZ=Asia/Shanghai # 设置中国上海时区（避免错过邮件提醒）
+
+# 数据挂载（根据需求选择）
+-v ~/docker_data/li-calendar/conf:/app/conf # 项目配置目录
+-v ~/docker_data/li-calendar/uploads:/app/uploads # 上传的文件目录
+-v ~/docker_data/li-calendar/database:/app/database # sqlite数据库目录（如果使用MySQL无需挂载此项）
+-v ~/docker_data/li-calendar/runtime:/app/runtime # 运行缓存、日志等(不推荐挂载)
 ```
--v ~/licalendar/conf:/app/conf # 项目配置目录
--v ~/licalendar/uploads:/app/uploads # 上传的文件目录
--v ~/licalendar/runtime:/app/runtime # 运行缓存、日志等
--v ~/licalendar/lang:/app/lang # 语言文件目录
--v ~/licalendar/database:/app/database # sqlite数据库目录
+
+
+## 🧂 访问、默认账号密码：
+
+### 浏览器打开
+
 ```
+http://[你的域名或ip]:9090
+```
+
+### 默认账号密码
+
+```
+账号：admin2024  // 年份是根据当时部署的年份创建的
+密码：123456
+```
+
 
 ## ⛺ (假日、风格)导入文件
-特殊日期和风格文件下载（特殊日期包含中国法定节假日2020-2023年文件，欢迎提供其他地区或者国家假期数据）
-[去查看和下载，持续更新](https://cloud.enianteam.com/#/share/ugwzotae)
+特殊日期和风格文件下载（特殊日期包含中国法定节假日2020-今年文件，欢迎提供其他地区或者国家假期数据）
+[去查看和下载，持续更新](https://github.com/li-calendar-notepad/li-calendar-resources)
 
 ## 🎁 打赏
 
@@ -159,6 +207,6 @@ licalendar:latest
 
 感谢各位爱好者对本项目作出的贡献（按加入时间排序）：
 
-- 红烧猎人 \[ [Github](https://github.com/hslr-s) | [Gitee](https://gitee.com/GgoCoder) ]
+- 红烧猎人 \[ [Github](https://github.com/hslr-s) | [Gitee](https://gitee.com/hslr) ]
 
 - GgoCoder \[ [Github](https://github.com/forgocode) | [Gitee](https://gitee.com/GgoCoder) ]
