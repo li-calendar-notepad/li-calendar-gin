@@ -196,8 +196,8 @@ http://[你的域名或ip]:9090
 
 
 ## ⛺ (假日、风格)导入文件
-特殊日期和风格文件下载（特殊日期包含中国法定节假日2020-2023年文件，欢迎提供其他地区或者国家假期数据）
-[去查看和下载，持续更新](https://cloud.enianteam.com/#/share/ugwzotae)
+特殊日期和风格文件下载（特殊日期包含中国法定节假日2020-今年文件，欢迎提供其他地区或者国家假期数据）
+[去查看和下载，持续更新](https://github.com/li-calendar-notepad/li-calendar-resources)
 
 ## 🎁 打赏
 
@@ -207,6 +207,6 @@ http://[你的域名或ip]:9090
 
 感谢各位爱好者对本项目作出的贡献（按加入时间排序）：
 
-- 红烧猎人 \[ [Github](https://github.com/hslr-s) | [Gitee](https://gitee.com/GgoCoder) ]
+- 红烧猎人 \[ [Github](https://github.com/hslr-s) | [Gitee](https://gitee.com/hslr) ]
 
 - GgoCoder \[ [Github](https://github.com/forgocode) | [Gitee](https://gitee.com/GgoCoder) ]
